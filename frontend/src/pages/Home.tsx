@@ -15,7 +15,7 @@ const Home = () => {
         <>
           {nav}
           <Container>
-            <p>Home page of parcel system</p>
+          <h3 className="text-center">Home page of parcel system</h3>
           </Container>
         </>
       );

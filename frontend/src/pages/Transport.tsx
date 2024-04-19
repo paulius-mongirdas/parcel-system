@@ -5,6 +5,8 @@ import Button from 'react-bootstrap/Button';
 import { useNavigate } from "react-router-dom";
 import Nav from "../components/Nav";
 import Modal from 'react-bootstrap/Modal';
+import Card from 'react-bootstrap/Card';
+import { Row } from "react-bootstrap";
 
 function ViewTransport() {
     const [nav, setNav] = useState<JSX.Element | undefined>(undefined);
@@ -28,7 +30,18 @@ function ViewTransport() {
         <>
             {nav}
             <Button onClick={() => setLgShow(true)} style={{ margin: '15px' }}>Register transport</Button>
+            <Container className="d-flex align-items-center justify-content-center">
+                <div style={{ overflowY: 'scroll', maxHeight: '500px' }}>
+                    {demoTruck()}
+                    {demoTruck()}
+                    {demoTruck()}
+                    {demoTruck()}
+                    {demoTruck()}
+                    {demoTruck()}
+                </div>
+            </Container>
 
+            
             <Modal
                 size="lg"
                 show={lgShow}
@@ -72,4 +85,22 @@ function ViewTransport() {
     );
 }
 
+function demoTruck() {
+    return (
+        <>
+            <Row>
+                <Card style={{ width: '60rem' }}>
+                    <Card.Body>
+                        <Card.Title>Demo truck</Card.Title>
+                        <Card.Text>
+                            Demo truck description
+                        </Card.Text>
+                        <Card.Link href="#">Edit transport</Card.Link>
+                        <Card.Link href="#">Remove transport</Card.Link>
+                    </Card.Body>
+                </Card>
+            </Row>
+        </>
+    )
+}
 export default ViewTransport;

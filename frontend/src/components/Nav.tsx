@@ -19,6 +19,11 @@ const Nav: React.FC<{}> = () => {
                         <Navi.Link href="/transport">Transport</Navi.Link>
                     </Navi>
                 </Navbar.Collapse>
+                <Navbar.Collapse className="justify-content-end">
+                    <Navi>
+                        <Navi.Link href="/">Log out</Navi.Link>
+                    </Navi>
+                </Navbar.Collapse>
             </Container>
         </Navbar>
     );
