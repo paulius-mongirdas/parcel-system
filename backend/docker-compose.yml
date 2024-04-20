@@ -1,0 +1,10 @@
+version: '3'
+services:
+  parcel-system-db:
+    image: postgres:13
+    ports:
+    - "5432:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 12344321
+      POSTGRES_DB: PARCEL-SYSTEM-DB
