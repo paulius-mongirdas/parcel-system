@@ -7,6 +7,9 @@ import Nav from "../components/Nav";
 import Modal from 'react-bootstrap/Modal';
 import axios from 'axios';
 import Transport from "../components/Transport";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import React from "react";
 
 interface TransportData {
     id: number;
@@ -14,6 +17,13 @@ interface TransportData {
     capacity: number;
     averageSpeed: number;
 }
+
+const showToastMessage = (message: string) => {
+    toast.success(message, {
+        position: "top-right",
+        autoClose: 3000,
+    });
+};
 
 const ViewTransport = () => {
     const navigate = useNavigate();
@@ -26,11 +36,13 @@ const ViewTransport = () => {
         capacity: 0,
         averageSpeed: 0
     });
-    
+
     const handleTextChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
         const { name, value } = e.target;
         setFormData({ ...formData, [name]: value });
     };
+
+    const [refreshing, setRefresh] = useState(false);
 
     const handleTransportSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -46,9 +58,11 @@ const ViewTransport = () => {
                     'Content-Type': 'application/json',
                 },
             });
-            console.log('Response from server:', response.data);
             setLgShow(false);
             window.location.reload();
+            console.log('Response from server:', response.data);
+            setRefresh(true);
+            localStorage.setItem("Status", "Transport added Successfully"); // Set the flag
         } catch (error) {
             console.error('Error submitting post:', error);
         }
@@ -58,18 +72,29 @@ const ViewTransport = () => {
         axios.get(`http://localhost:3333/transport/all`)
             .then(response => {
                 console.log("Report response: ", response.data);
-              const transport = response.data.map((transport: TransportData) => ({
-                id: transport.id,
-                type: transport.type,
-                capacity: transport.capacity,
-                averageSpeed: transport.averageSpeed
-              }));
-              setTransportData(transport);
+                const transport = response.data.map((transport: TransportData) => ({
+                    id: transport.id,
+                    type: transport.type,
+                    capacity: transport.capacity,
+                    averageSpeed: transport.averageSpeed
+                }));
+                setTransportData(transport);
             })
             .catch(error => {
-              console.error(error);
+                console.error(error);
             });
     }, [navigate]);
+
+    useEffect(() => {
+        if (localStorage.getItem("Status") && document.readyState == 'complete' && !refreshing) {
+            var message = localStorage.getItem("Status");
+            if (message == null)
+                message = ""
+            showToastMessage(message); // Display the toast
+            localStorage.removeItem("Status"); // Clear the flag   
+            setRefresh(false)
+        }
+    });
     return (
         <>
             <Nav />

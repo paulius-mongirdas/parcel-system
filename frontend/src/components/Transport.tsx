@@ -1,6 +1,7 @@
 import axios from "axios";
-import { useState } from "react";
-import { Row, Card, Button, Form, Modal } from "react-bootstrap";
+import { useEffect, useState } from "react";
+import { Row, Card, Button, Form, Modal, ToastContainer } from "react-bootstrap";
+import { toast } from "react-toastify";
 
 interface TransportData {
     id: number;
@@ -28,7 +29,7 @@ const Transport: React.FC<TransportProps> = ({ transport }) => {
         const { name, value } = e.target;
         setFormData({ ...formData, [name]: value });
     };
-
+    
     const handleTransportSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         console.log('Form Data:', formData);
@@ -44,8 +45,8 @@ const Transport: React.FC<TransportProps> = ({ transport }) => {
                     'Content-Type': 'application/json',
                 },
             });
-            console.log('Response from server:', response.data);
             setShowCardDetails(false);
+            localStorage.setItem("Status", "Transport updated Successfully"); // Set the flag
             window.location.reload();
         } catch (error) {
             console.error('Error submitting post:', error);
@@ -57,6 +58,7 @@ const Transport: React.FC<TransportProps> = ({ transport }) => {
             const response = await axios.delete(`http://localhost:3333/transport/delete/${transport.id}`);
             console.log('Response from server:', response.data);
             setShowDeleteConfirm(false);
+            localStorage.setItem("Status", "Transport removed Successfully"); // Set the flag
             window.location.reload();
         } catch (error) {
             console.error('Error submitting post:', error);
