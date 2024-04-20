@@ -3,7 +3,7 @@ import {BrowserRouter, Routes, Route, useNavigate} from 'react-router-dom';
 import { useLocation, useParams } from 'react-router-dom';
 import Nav from "./components/Nav";
 import HomePage from "./pages/Home";
-import TransportPage from "./pages/Transport";
+import TransportList from "./pages/TransportList";
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 const UseNav=()=>{
@@ -48,7 +48,7 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route path={'/'} element={<HomePage/>} />
-        <Route path={'/transport'} element={<TransportPage/>} />
+        <Route path={'/transport'} element={<TransportList/>} />
       </Routes>
     </BrowserRouter>
   );

@@ -12,7 +12,6 @@ const Nav: React.FC<{}> = () => {
     return (
         <Navbar expand="lg" className="bg-body-tertiary">
             <Container fluid style={{paddingLeft: 10, paddingRight: 10}}>
-                <Navbar.Toggle aria-controls="basic-navbar-nav"/>
                 <Navbar.Collapse className="justify-content-start">
                     <Navi>
                         <Navi.Link href="/">Home</Navi.Link>

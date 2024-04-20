@@ -7,12 +7,24 @@ import Nav from "../components/Nav";
 import Modal from 'react-bootstrap/Modal';
 import Card from 'react-bootstrap/Card';
 import { Row } from "react-bootstrap";
+import axios from 'axios';
+import Transport from "../components/Transport";
 
-function ViewTransport() {
-    const [nav, setNav] = useState<JSX.Element | undefined>(undefined);
-    const [smShow, setSmShow] = useState(false);
+// import the notes controller for postingNotes and fetching all notes
+//import { getAllTransport } from "../../../backend/src/controllers/Car/CarController";
+
+interface TransportData {
+    id: number;
+    type: string;
+    capacity: number;
+    averageSpeed: number;
+}
+
+const ViewTransport = () => {
+    const navigate = useNavigate();
     const [lgShow, setLgShow] = useState(false);
 
+    const [transportData, setTransportData] = useState([]);
     const [formData, setFormData] = useState({
         text: '',
     });
@@ -24,24 +36,34 @@ function ViewTransport() {
     };
 
     useEffect(() => {
-        setNav(<Nav />);
-    })
+        axios.get(`http://localhost:3333/transport/all`)
+            .then(response => {
+                console.log("Report response: ", response.data);
+              const transport = response.data.map((transport: TransportData) => ({
+                id: transport.id,
+                type: transport.type,
+                capacity: transport.capacity,
+                averageSpeed: transport.averageSpeed
+              }));
+              setTransportData(transport);
+            })
+            .catch(error => {
+              console.error(error);
+            });
+    }, [navigate]);
     return (
         <>
-            {nav}
+            <Nav />
             <Button onClick={() => setLgShow(true)} style={{ margin: '15px' }}>Register transport</Button>
             <Container className="d-flex align-items-center justify-content-center">
                 <div style={{ overflowY: 'scroll', maxHeight: '500px' }}>
-                    {demoTruck()}
-                    {demoTruck()}
-                    {demoTruck()}
-                    {demoTruck()}
-                    {demoTruck()}
-                    {demoTruck()}
+                    {transportData.map((transport: TransportData, index) => (
+                        <Transport key={index} transport={transport} />
+                    ))}
                 </div>
             </Container>
 
-            
+
             <Modal
                 size="lg"
                 show={lgShow}
@@ -84,7 +106,6 @@ function ViewTransport() {
         </>
     );
 }
-
 function demoTruck() {
     return (
         <>

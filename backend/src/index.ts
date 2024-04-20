@@ -1,14 +1,16 @@
-import express from 'express';
-import { PrismaClient } from '@prisma/client';
+import { NestFactory } from '@nestjs/core';
+import { AppModule } from './appModule';
+import { ExpressAdapter } from '@nestjs/platform-express';
+import * as express from 'express';
+import { ValidationPipe } from '@nestjs/common';
 
-const prisma = new PrismaClient();
-const app = express();
-
-/*app.get('/trucks', async (req, res) => {
-  const trucks = await prisma.truck.findMany();
-  res.json(trucks);
-});*/
-
-app.listen(3333, () => {
-  console.log('Server is running on http://localhost:3333');
-});
+async function bootstrap() {
+  const server = express();
+  const app = await NestFactory.create(AppModule, new ExpressAdapter(server));
+  app.enableCors();
+  app.useGlobalPipes(new ValidationPipe({
+    whitelist: true,
+  }))
+  await app.listen(3333);
+}
+bootstrap();

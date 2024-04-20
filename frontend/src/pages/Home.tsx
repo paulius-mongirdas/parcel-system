@@ -8,12 +8,13 @@ const Home = () => {
     const navigate = useNavigate();
     const [nav, setNav] = useState<JSX.Element | undefined>(undefined);
 
+    
     useEffect(() => {
-          setNav(<Nav/>);
-    })
+        //setNav(<Nav/>);
+    });
     return( 
         <>
-          {nav}
+          <Nav/>
           <Container>
           <h3 className="text-center">Home page of parcel system</h3>
           </Container>
