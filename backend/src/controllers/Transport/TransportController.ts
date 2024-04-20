@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Get, Query, Req, Put } from '@nestjs/common';
+import { Controller, Post, Body, Get, Query, Req, Put, Param, Delete } from '@nestjs/common';
 import { TransportService } from './TransportService';
 import { Transport } from '@prisma/client';
 
@@ -17,5 +17,9 @@ export class TransportController {
     @Put('update')
     async updateTransport(@Body() body: Transport): Promise<Transport> {
         return this.carService.updateTransport(body);
+    }
+    @Delete('delete/:id')
+    async deleteTransport(@Param('id') id: number): Promise<Transport> {
+        return this.carService.deleteTransport(id);
     }
 }

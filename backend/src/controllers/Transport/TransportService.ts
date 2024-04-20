@@ -50,4 +50,16 @@ export class TransportService {
             throw error;
         }
     }
+    async deleteTransport(id: number): Promise<Transport> {
+        try {
+            const transport = await this.prisma.transport.delete({
+                where: {
+                    id:  Number(id)
+                }
+            });
+            return transport;
+        } catch (error) {
+            throw error;
+        }
+    }
 }

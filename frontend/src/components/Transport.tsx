@@ -16,6 +16,7 @@ interface TransportProps {
 const Transport: React.FC<TransportProps> = ({ transport }) => {
     const [showCardDetails, setShowCardDetails] = useState(false);
     const [showCardOptions, setShowCardOptions] = useState(false);
+    const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
     const [formData, setFormData] = useState({
         type: transport.type,
@@ -50,6 +51,17 @@ const Transport: React.FC<TransportProps> = ({ transport }) => {
             console.error('Error submitting post:', error);
         }
     };
+
+    const handleDelete = async () => {
+        try {
+            const response = await axios.delete(`http://localhost:3333/transport/delete/${transport.id}`);
+            console.log('Response from server:', response.data);
+            setShowDeleteConfirm(false);
+            window.location.reload();
+        } catch (error) {
+            console.error('Error submitting post:', error);
+        }
+    }
     return (
         <>
             <Row>
@@ -86,7 +98,7 @@ const Transport: React.FC<TransportProps> = ({ transport }) => {
                         Edit
                     </Button>
                     &nbsp;&nbsp;
-                    <Button variant="primary" style={{ height: '35px' }} onClick={function () { setShowCardOptions(false) }}>
+                    <Button variant="primary" style={{ height: '35px' }} onClick={function () { setShowCardOptions(false); setShowDeleteConfirm(true) }}>
                         Remove
                     </Button>
                 </Modal.Body>
@@ -129,6 +141,31 @@ const Transport: React.FC<TransportProps> = ({ transport }) => {
                     <br></br>
                     <Button variant="success" className="float-right" style={{ height: '35px' }} onClick={handleTransportSubmit}>
                         Save changes
+                    </Button>
+                </Modal.Body>
+            </Modal>
+
+            <Modal
+                size="lg"
+                show={showDeleteConfirm}
+                onHide={() => setShowDeleteConfirm(false)}
+                aria-labelledby="example-modal-sizes-title-lg"
+            >
+                <Modal.Header closeButton>
+                    <Modal.Title id="example-modal-sizes-title-lg">
+                        Transport #{transport.id}
+                    </Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <Card.Text>
+                        Are you sure you want to delete <b>transport #{transport.id}</b>?
+                    </Card.Text>
+                    <Button variant="primary" style={{ height: '35px' }} onClick={function () { handleDelete(); setShowDeleteConfirm(false) }}>
+                        Confirm
+                    </Button>
+                    &nbsp;&nbsp;
+                    <Button variant="primary" style={{ height: '35px' }} onClick={function () { setShowDeleteConfirm(false) }}>
+                        Cancel
                     </Button>
                 </Modal.Body>
             </Modal>
