@@ -14,7 +14,9 @@ interface TransportProps {
 }
 
 const Transport: React.FC<TransportProps> = ({ transport }) => {
-    const [lgShow, setLgShow] = useState(false);
+    const [showCardDetails, setShowCardDetails] = useState(false);
+    const [showCardOptions, setShowCardOptions] = useState(false);
+
     const [formData, setFormData] = useState({
         type: transport.type,
         capacity: transport.capacity,
@@ -25,7 +27,7 @@ const Transport: React.FC<TransportProps> = ({ transport }) => {
         const { name, value } = e.target;
         setFormData({ ...formData, [name]: value });
     };
-    
+
     const handleTransportSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         console.log('Form Data:', formData);
@@ -42,7 +44,7 @@ const Transport: React.FC<TransportProps> = ({ transport }) => {
                 },
             });
             console.log('Response from server:', response.data);
-            setLgShow(false);
+            setShowCardDetails(false);
             window.location.reload();
         } catch (error) {
             console.error('Error submitting post:', error);
@@ -51,7 +53,7 @@ const Transport: React.FC<TransportProps> = ({ transport }) => {
     return (
         <>
             <Row>
-                <Card style={{ width: '60rem' }}>
+                <Card style={{ width: '60rem', cursor: "pointer" }} onClick={() => setShowCardOptions(true)} >
                     <Card.Body>
                         <Card.Title>Transport #{transport.id}</Card.Title>
                         <Card.Text>
@@ -59,52 +61,77 @@ const Transport: React.FC<TransportProps> = ({ transport }) => {
                             <b>Capacity:</b> {transport.capacity} <br />
                             <b>Average speed:</b> {transport.averageSpeed} <br />
                         </Card.Text>
-                        <Card.Link href="#" onClick={()=>setLgShow(true)}>Edit transport</Card.Link>
-                        <Card.Link href="#">Remove transport</Card.Link>
                     </Card.Body>
                 </Card>
             </Row>
 
             <Modal
-                    size="lg"
-                    show={lgShow}
-                    onHide={() => setLgShow(false)}
-                    aria-labelledby="example-modal-sizes-title-lg"
-                >
-                    <Modal.Header closeButton>
-                        <Modal.Title id="example-modal-sizes-title-lg">
-                            Edit transport #{transport.id}
-                        </Modal.Title>
-                    </Modal.Header>
-                    <Modal.Body>
-                        <Form.Group controlId="postText">
-                            <Form.Label>Type:</Form.Label>
-                            <Form.Control
-                                as="select"
-                                defaultValue={transport.type}
-                                name="type"
-                                onChange={e => {
-                                    console.log("e.target.value", e.target.value);
-                                    setFormData({ ...formData, type: e.target.value });
-                                }}
-                            >
-                                <option value="local van">Local van</option>
-                                <option value="long journey van">Long journey van</option>
-                                <option value="truck">Truck</option>
-                            </Form.Control>
-                            <br />
-                            <Form.Label>Capacity:</Form.Label>
-                            <Form.Control type="number" name="capacity" defaultValue={transport.capacity} placeholder="Enter capacity" onChange={handleTextChange} />
-                            <br />
-                            <Form.Label>Average speed:</Form.Label>
-                            <Form.Control type="number" name="averageSpeed" defaultValue={transport.averageSpeed} placeholder="Enter average speed" onChange={handleTextChange}/>
-                        </Form.Group>
-                        <br></br>
-                        <Button variant="success" className="float-right" style={{ height: '35px' }} onClick={handleTransportSubmit}>
-                            Save changes
-                        </Button>
-                    </Modal.Body>
-                </Modal>
+                size="lg"
+                show={showCardOptions}
+                onHide={() => setShowCardOptions(false)}
+                aria-labelledby="example-modal-sizes-title-lg"
+            >
+                <Modal.Header closeButton>
+                    <Modal.Title id="example-modal-sizes-title-lg">
+                        Transport #{transport.id}
+                    </Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <Card.Text>
+                        <b>Type:</b> {transport.type} <br />
+                        <b>Capacity:</b> {transport.capacity} <br />
+                        <b>Average speed:</b> {transport.averageSpeed} <br />
+                    </Card.Text>
+                    <Button variant="primary" style={{ height: '35px' }} onClick={function () { setShowCardDetails(true); setShowCardOptions(false) }}>
+                        Edit
+                    </Button>
+                    &nbsp;&nbsp;
+                    <Button variant="primary" style={{ height: '35px' }} onClick={function () { setShowCardOptions(false) }}>
+                        Remove
+                    </Button>
+                </Modal.Body>
+            </Modal>
+
+            <Modal
+                size="lg"
+                show={showCardDetails}
+                onHide={() => setShowCardDetails(false)}
+                aria-labelledby="example-modal-sizes-title-lg"
+            >
+                <Modal.Header closeButton>
+                    <Modal.Title id="example-modal-sizes-title-lg">
+                        Edit transport #{transport.id}
+                    </Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <Form.Group controlId="postText">
+                        <Form.Label>Type:</Form.Label>
+                        <Form.Control
+                            as="select"
+                            defaultValue={transport.type}
+                            name="type"
+                            onChange={e => {
+                                console.log("e.target.value", e.target.value);
+                                setFormData({ ...formData, type: e.target.value });
+                            }}
+                        >
+                            <option value="local van">Local van</option>
+                            <option value="long journey van">Long journey van</option>
+                            <option value="truck">Truck</option>
+                        </Form.Control>
+                        <br />
+                        <Form.Label>Capacity:</Form.Label>
+                        <Form.Control type="number" name="capacity" defaultValue={transport.capacity} placeholder="Enter capacity" onChange={handleTextChange} />
+                        <br />
+                        <Form.Label>Average speed:</Form.Label>
+                        <Form.Control type="number" name="averageSpeed" defaultValue={transport.averageSpeed} placeholder="Enter average speed" onChange={handleTextChange} />
+                    </Form.Group>
+                    <br></br>
+                    <Button variant="success" className="float-right" style={{ height: '35px' }} onClick={handleTransportSubmit}>
+                        Save changes
+                    </Button>
+                </Modal.Body>
+            </Modal>
         </>
     );
 };
