@@ -5,13 +5,8 @@ import Button from 'react-bootstrap/Button';
 import { useNavigate } from "react-router-dom";
 import Nav from "../components/Nav";
 import Modal from 'react-bootstrap/Modal';
-import Card from 'react-bootstrap/Card';
-import { Row } from "react-bootstrap";
 import axios from 'axios';
 import Transport from "../components/Transport";
-
-// import the notes controller for postingNotes and fetching all notes
-//import { getAllTransport } from "../../../backend/src/controllers/Car/CarController";
 
 interface TransportData {
     id: number;
@@ -25,14 +20,38 @@ const ViewTransport = () => {
     const [lgShow, setLgShow] = useState(false);
 
     const [transportData, setTransportData] = useState([]);
-    const [formData, setFormData] = useState({
-        text: '',
-    });
-    const [type, setType]: any = useState('');
 
+    const [formData, setFormData] = useState({
+        type: 'local van',
+        capacity: 0,
+        averageSpeed: 0
+    });
+    
     const handleTextChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
         const { name, value } = e.target;
         setFormData({ ...formData, [name]: value });
+    };
+
+    const handleTransportSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        console.log('Form Data:', formData);
+        try {
+            const response = await axios.post('http://localhost:3333/transport/add', {
+                ...formData,
+                type: formData.type,
+                capacity: +formData.capacity,
+                averageSpeed: +formData.averageSpeed
+            }, {
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+            console.log('Response from server:', response.data);
+            setLgShow(false);
+            window.location.reload();
+        } catch (error) {
+            console.error('Error submitting post:', error);
+        }
     };
 
     useEffect(() => {
@@ -80,48 +99,31 @@ const ViewTransport = () => {
                         <Form.Label>Type:</Form.Label>
                         <Form.Control
                             as="select"
-                            value={type}
+                            value={formData.type}
+                            name="type"
                             onChange={e => {
                                 console.log("e.target.value", e.target.value);
-                                setType(e.target.value);
+                                setFormData({ ...formData, type: e.target.value });
                             }}
                         >
-                            <option value="vietinis_furgonas">Local van</option>
-                            <option value="ilgos_keliones_furgonas">Long journey van</option>
-                            <option value="vilkikas">Truck</option>
+                            <option value="local van">Local van</option>
+                            <option value="long journey van">Long journey van</option>
+                            <option value="truck">Truck</option>
                         </Form.Control>
                         <br />
                         <Form.Label>Capacity:</Form.Label>
-                        <Form.Control type="number" placeholder="Enter capacity" onChange={handleTextChange} />
+                        <Form.Control type="number" name="capacity" placeholder="Enter capacity" onChange={handleTextChange} />
                         <br />
                         <Form.Label>Average speed:</Form.Label>
-                        <Form.Control type="number" placeholder="Enter average speed" onChange={handleTextChange} />
+                        <Form.Control type="number" name="averageSpeed" placeholder="Enter average speed" onChange={handleTextChange} />
                     </Form.Group>
                     <br></br>
-                    <Button variant="success" className="float-right" style={{ height: '35px' }}>
+                    <Button variant="success" className="float-right" style={{ height: '35px' }} onClick={handleTransportSubmit}>
                         Register
                     </Button>
                 </Modal.Body>
             </Modal>
         </>
     );
-}
-function demoTruck() {
-    return (
-        <>
-            <Row>
-                <Card style={{ width: '60rem' }}>
-                    <Card.Body>
-                        <Card.Title>Demo truck</Card.Title>
-                        <Card.Text>
-                            Demo truck description
-                        </Card.Text>
-                        <Card.Link href="#">Edit transport</Card.Link>
-                        <Card.Link href="#">Remove transport</Card.Link>
-                    </Card.Body>
-                </Card>
-            </Row>
-        </>
-    )
 }
 export default ViewTransport;
