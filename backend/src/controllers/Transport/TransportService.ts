@@ -33,4 +33,21 @@ export class TransportService {
             throw error;
         }
     }
+    async updateTransport(body: Transport): Promise<Transport> {
+        try {
+            const transport = await this.prisma.transport.update({
+                where: {
+                    id: body.id
+                },
+                data: {
+                    type: body.type,
+                    capacity: body.capacity,
+                    averageSpeed: body.averageSpeed
+                }
+            });
+            return transport;
+        } catch (error) {
+            throw error;
+        }
+    }
 }

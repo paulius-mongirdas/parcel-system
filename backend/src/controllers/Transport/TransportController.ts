@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Get, Query, Req } from '@nestjs/common';
+import { Controller, Post, Body, Get, Query, Req, Put } from '@nestjs/common';
 import { TransportService } from './TransportService';
 import { Transport } from '@prisma/client';
 
@@ -14,5 +14,8 @@ export class TransportController {
     async addTransport(@Body() body: Transport): Promise<Transport> {
         return this.carService.addTransport(body);
     }
-
+    @Put('update')
+    async updateTransport(@Body() body: Transport): Promise<Transport> {
+        return this.carService.updateTransport(body);
+    }
 }
