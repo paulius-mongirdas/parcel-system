@@ -138,12 +138,12 @@ const Transport: React.FC<TransportProps> = ({ transport }) => {
                         <br />
                         <Form.Group controlId="capacity">
                             <Form.Label>Capacity:</Form.Label>
-                            <Form.Control required type="number" pattern="[0-9]*" inputMode="numeric" name="capacity" defaultValue={transport.capacity} placeholder="Enter capacity" onChange={handleTextChange} />
+                            <Form.Control required type="number" pattern="[0-9]*" min={0} inputMode="numeric" name="capacity" defaultValue={transport.capacity} placeholder="Enter capacity" onChange={handleTextChange} />
                         </Form.Group>
                         <br />
                         <Form.Group controlId="averageSpeed">
                             <Form.Label>Average speed:</Form.Label>
-                            <Form.Control required type="number" pattern="[0-9]*" inputMode="numeric" name="averageSpeed" defaultValue={transport.averageSpeed} placeholder="Enter average speed" onChange={handleTextChange} />
+                            <Form.Control required type="number" pattern="[0-9]*" min={0} inputMode="numeric" name="averageSpeed" defaultValue={transport.averageSpeed} placeholder="Enter average speed" onChange={handleTextChange} />
                         </Form.Group>
                         <br></br>
                         <Button variant="success" className="float-right" style={{ height: '35px' }} type="submit">

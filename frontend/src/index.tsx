@@ -13,7 +13,7 @@ root.render(
   <React.StrictMode>
     <App />
     <>
-      <ToastContainer />
+      <ToastContainer style={{paddingTop: "45px"}}/>
     </>
   </React.StrictMode>
 );

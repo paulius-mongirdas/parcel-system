@@ -141,12 +141,12 @@ const ViewTransport = () => {
                             <br />
                             <Form.Group controlId="capacity">
                             <Form.Label>Capacity (m<sup>3</sup>):</Form.Label>
-                            <Form.Control required type="number" pattern="[0-9]*" inputMode="numeric" name="capacity" placeholder="Enter capacity" onChange={handleTextChange} />
+                            <Form.Control required type="number" pattern="[0-9]*" min={0} inputMode="numeric" name="capacity" placeholder="Enter capacity" onChange={handleTextChange} />
                             </Form.Group>
                             <br />
                             <Form.Group controlId="averageSpeed">
                             <Form.Label>Average speed (km/h):</Form.Label>
-                            <Form.Control required type="number" pattern="[0-9]*" inputMode="numeric" name="averageSpeed" placeholder="Enter average speed" onChange={handleTextChange} />
+                            <Form.Control required type="number" pattern="[0-9]*" min={0} inputMode="numeric" name="averageSpeed" placeholder="Enter average speed" onChange={handleTextChange} />
                         </Form.Group>
                         <br></br>
                         <Button variant="success" type="submit" className="float-right" style={{ height: '35px' }}>
