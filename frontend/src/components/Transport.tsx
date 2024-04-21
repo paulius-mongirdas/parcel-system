@@ -29,7 +29,7 @@ const Transport: React.FC<TransportProps> = ({ transport }) => {
         const { name, value } = e.target;
         setFormData({ ...formData, [name]: value });
     };
-    
+
     const handleTransportSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         console.log('Form Data:', formData);
@@ -118,32 +118,38 @@ const Transport: React.FC<TransportProps> = ({ transport }) => {
                     </Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <Form.Group controlId="postText">
-                        <Form.Label>Type:</Form.Label>
-                        <Form.Control
-                            as="select"
-                            defaultValue={transport.type}
-                            name="type"
-                            onChange={e => {
-                                console.log("e.target.value", e.target.value);
-                                setFormData({ ...formData, type: e.target.value });
-                            }}
-                        >
-                            <option value="local van">Local van</option>
-                            <option value="long journey van">Long journey van</option>
-                            <option value="truck">Truck</option>
-                        </Form.Control>
+                    <Form onSubmit={handleTransportSubmit}>
+                        <Form.Group controlId="type">
+                            <Form.Label>Type:</Form.Label>
+                            <Form.Control
+                                as="select"
+                                defaultValue={transport.type}
+                                name="type"
+                                onChange={e => {
+                                    console.log("e.target.value", e.target.value);
+                                    setFormData({ ...formData, type: e.target.value });
+                                }}
+                            >
+                                <option value="local van">Local van</option>
+                                <option value="long journey van">Long journey van</option>
+                                <option value="truck">Truck</option>
+                            </Form.Control>
+                        </Form.Group>
                         <br />
-                        <Form.Label>Capacity:</Form.Label>
-                        <Form.Control type="number" name="capacity" defaultValue={transport.capacity} placeholder="Enter capacity" onChange={handleTextChange} />
+                        <Form.Group controlId="capacity">
+                            <Form.Label>Capacity:</Form.Label>
+                            <Form.Control required type="number" pattern="[0-9]*" inputMode="numeric" name="capacity" defaultValue={transport.capacity} placeholder="Enter capacity" onChange={handleTextChange} />
+                        </Form.Group>
                         <br />
-                        <Form.Label>Average speed:</Form.Label>
-                        <Form.Control type="number" name="averageSpeed" defaultValue={transport.averageSpeed} placeholder="Enter average speed" onChange={handleTextChange} />
-                    </Form.Group>
-                    <br></br>
-                    <Button variant="success" className="float-right" style={{ height: '35px' }} onClick={handleTransportSubmit}>
-                        Save changes
-                    </Button>
+                        <Form.Group controlId="averageSpeed">
+                            <Form.Label>Average speed:</Form.Label>
+                            <Form.Control required type="number" pattern="[0-9]*" inputMode="numeric" name="averageSpeed" defaultValue={transport.averageSpeed} placeholder="Enter average speed" onChange={handleTextChange} />
+                        </Form.Group>
+                        <br></br>
+                        <Button variant="success" className="float-right" style={{ height: '35px' }} type="submit">
+                            Save changes
+                        </Button>
+                    </Form>
                 </Modal.Body>
             </Modal>
 

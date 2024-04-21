@@ -28,6 +28,7 @@ const showToastMessage = (message: string) => {
 const ViewTransport = () => {
     const navigate = useNavigate();
     const [lgShow, setLgShow] = useState(false);
+    const [validated, setValidated] = useState(false);
 
     const [transportData, setTransportData] = useState([]);
 
@@ -120,32 +121,38 @@ const ViewTransport = () => {
                     </Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <Form.Group controlId="postText">
-                        <Form.Label>Type:</Form.Label>
-                        <Form.Control
-                            as="select"
-                            value={formData.type}
-                            name="type"
-                            onChange={e => {
-                                console.log("e.target.value", e.target.value);
-                                setFormData({ ...formData, type: e.target.value });
-                            }}
-                        >
-                            <option value="local van">Local van</option>
-                            <option value="long journey van">Long journey van</option>
-                            <option value="truck">Truck</option>
-                        </Form.Control>
-                        <br />
-                        <Form.Label>Capacity:</Form.Label>
-                        <Form.Control type="number" name="capacity" placeholder="Enter capacity" onChange={handleTextChange} />
-                        <br />
-                        <Form.Label>Average speed:</Form.Label>
-                        <Form.Control type="number" name="averageSpeed" placeholder="Enter average speed" onChange={handleTextChange} />
-                    </Form.Group>
-                    <br></br>
-                    <Button variant="success" className="float-right" style={{ height: '35px' }} onClick={handleTransportSubmit}>
-                        Register
-                    </Button>
+                    <Form onSubmit={handleTransportSubmit}>
+                        <Form.Group controlId="type">
+                            <Form.Label>Type:</Form.Label>
+                            <Form.Control
+                                as="select"
+                                value={formData.type}
+                                name="type"
+                                onChange={e => {
+                                    console.log("e.target.value", e.target.value);
+                                    setFormData({ ...formData, type: e.target.value });
+                                }}
+                            >
+                                <option value="local van">Local van</option>
+                                <option value="long journey van">Long journey van</option>
+                                <option value="truck">Truck</option>
+                            </Form.Control>
+                            </Form.Group>
+                            <br />
+                            <Form.Group controlId="capacity">
+                            <Form.Label>Capacity (m<sup>3</sup>):</Form.Label>
+                            <Form.Control required type="text" pattern="[0-9]*" inputMode="numeric" name="capacity" placeholder="Enter capacity" onChange={handleTextChange} />
+                            </Form.Group>
+                            <br />
+                            <Form.Group controlId="averageSpeed">
+                            <Form.Label>Average speed (km/h):</Form.Label>
+                            <Form.Control required type="text" pattern="[0-9]*" inputMode="numeric" name="averageSpeed" placeholder="Enter average speed" onChange={handleTextChange} />
+                        </Form.Group>
+                        <br></br>
+                        <Button variant="success" type="submit" className="float-right" style={{ height: '35px' }}>
+                            Register
+                        </Button>
+                        </Form>
                 </Modal.Body>
             </Modal>
         </>
