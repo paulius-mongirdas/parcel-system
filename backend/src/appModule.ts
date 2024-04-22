@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { TransportModule } from './controllers/Transport/TransportModule';
+import { CarModule } from './Car/CarModule';
 import { ConfigModule } from '@nestjs/config';
 import { PrismaModule } from '../prisma/PrismaModule';
 
@@ -7,7 +7,7 @@ import { PrismaModule } from '../prisma/PrismaModule';
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
     PrismaModule,
-    TransportModule,
+    CarModule,
   ],
   controllers: [],
   providers: [],

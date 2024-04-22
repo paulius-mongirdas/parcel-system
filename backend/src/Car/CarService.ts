@@ -1,12 +1,12 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from '../../../prisma/prismaService';
+import { PrismaService } from '../../prisma/prismaService';
 import { Transport } from '@prisma/client';
 
 @Injectable()
-export class TransportService {
+export class CarService {
     constructor(private readonly prisma: PrismaService) { }
 
-    async getAllTransport(): Promise<any> {
+    async select(): Promise<any> {
         try {
             const transports = await this.prisma.transport.findMany({
                 orderBy: {
@@ -19,7 +19,7 @@ export class TransportService {
             throw error;
         }
     }
-    async addTransport(body: Transport): Promise<Transport> {
+    async insertCar(body: Transport): Promise<Transport> {
         try {
             const transport = await this.prisma.transport.create({
                 data: {
@@ -33,7 +33,7 @@ export class TransportService {
             throw error;
         }
     }
-    async updateTransport(body: Transport): Promise<Transport> {
+    async update(body: Transport): Promise<Transport> {
         try {
             const transport = await this.prisma.transport.update({
                 where: {
@@ -50,7 +50,7 @@ export class TransportService {
             throw error;
         }
     }
-    async deleteTransport(id: number): Promise<Transport> {
+    async delete(id: number): Promise<Transport> {
         try {
             const transport = await this.prisma.transport.delete({
                 where: {

@@ -68,8 +68,9 @@ const ViewTransport = () => {
             console.error('Error submitting post:', error);
         }
     };
-
-    useEffect(() => {
+    
+    // openCarList()
+    const openCarList = useEffect(() => {
         axios.get(`http://localhost:3333/transport/all`)
             .then(response => {
                 console.log("Report response: ", response.data);
@@ -86,6 +87,7 @@ const ViewTransport = () => {
             });
     }, [navigate]);
 
+    // Success messages
     useEffect(() => {
         if (localStorage.getItem("Status") && document.readyState == 'complete' && !refreshing) {
             var message = localStorage.getItem("Status");
