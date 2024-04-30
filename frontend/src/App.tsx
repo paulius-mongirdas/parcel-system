@@ -2,7 +2,7 @@ import React from 'react';
 import {BrowserRouter, Routes, Route, useNavigate} from 'react-router-dom';
 import { useLocation, useParams } from 'react-router-dom';
 import Nav from "./components/Nav";
-import HomePage from "./pages/Home";
+import HomePage from "./pages/Main";
 import TransportList from "./pages/CarList";
 import 'bootstrap/dist/css/bootstrap.min.css';
 
