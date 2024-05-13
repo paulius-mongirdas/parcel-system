@@ -4,6 +4,7 @@ import { useLocation, useParams } from 'react-router-dom';
 import Nav from "./components/Nav";
 import HomePage from "./pages/Main";
 import TransportList from "./pages/CarList";
+import CenterList from "./pages/CenterList";
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 const UseNav=()=>{
@@ -16,6 +17,7 @@ function App() {
       <Routes>
         <Route path={'/'} element={<HomePage/>} />
         <Route path={'/transport'} element={<TransportList/>} />
+        <Route path={'/center'} element={<CenterList/>} />
       </Routes>
     </BrowserRouter>
   );

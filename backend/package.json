@@ -16,12 +16,13 @@
     "class-validator": "^0.14.1",
     "express": "^4.19.2",
     "next": "^14.2.2",
-    "next-connect": "^1.0.0"
+    "next-connect": "^1.0.0",
+    "react-google-autocomplete": "^2.7.3"
   },
   "scripts": {
     "dev": "nodemon src/index.ts",
     "start": "ts-node src/index.ts",
     "start:dev": "nodemon -x ts-node src/index.ts",
     "build": "tsc --build"
-    }
+  }
 }
