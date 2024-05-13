@@ -105,9 +105,6 @@ const ViewCenter = () => {
                     capacity: center.capacity,
                     address: center.address,
                     city: center.city,
-                    // map center country code to country name if it exists, else show code
-                    //country: (countries.find((country: any) => country.value === center.country) as any)?.label || center.country
-                    //country: (countries.find((country: any) => country.value === center.country) as any)?.label
                     country: center.country
                 }));
                 setCenterData(center);

@@ -51,17 +51,17 @@ export class CenterService {
         } catch (error) {
             throw error;
         }
-    }
-    async delete(id: number): Promise<Transport> {
+    }*/
+    async delete(id: number): Promise<Center> {
         try {
-            const transport = await this.prisma.transport.delete({
+            const center = await this.prisma.center.delete({
                 where: {
                     id:  Number(id)
                 }
             });
-            return transport;
+            return center;
         } catch (error) {
             throw error;
         }
-    }*/
+    }
 }
