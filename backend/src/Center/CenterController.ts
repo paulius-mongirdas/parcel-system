@@ -14,10 +14,10 @@ export class CenterController {
     async insertCenter(@Body() body: Center): Promise<Center> {
         return this.centerService.insertCenter(body);
     }
-    /*@Put('update')
-    async update(@Body() body: Transport): Promise<Transport> {
-        return this.carService.update(body);
-    }*/
+    @Put('update')
+    async update(@Body() body: Center): Promise<Center> {
+        return this.centerService.update(body);
+    }
     @Delete('delete/:id')
     async delete(@Param('id') id: number): Promise<Center> {
         return this.centerService.delete(id);

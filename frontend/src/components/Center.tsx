@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { Row, Card, Button, Form, Modal, ToastContainer } from "react-bootstrap";
 import { toast } from "react-toastify";
 import Autocomplete from "react-google-autocomplete";
+import GooglePlacesAutocomplete from "react-google-places-autocomplete";
 
 interface CenterData {
     id: number;
@@ -28,6 +29,18 @@ const Center: React.FC<CenterProps> = ({ center }) => {
         city: center.city,
         country: center.country
     });
+
+    const [countries, setCountries] = useState([]);
+
+    useEffect(() => {
+        fetch(
+            "https://valid.layercode.workers.dev/list/countries?format=select&flags=true&value=code"
+        )
+            .then((response) => response.json())
+            .then((data) => {
+                setCountries(data.countries);
+            });
+    }, []);
 
     const handleTextChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
         const { name, value } = e.target;
@@ -131,8 +144,41 @@ const Center: React.FC<CenterProps> = ({ center }) => {
                             <Form.Control required type="number" pattern="[0-9]*" min={0} inputMode="numeric" name="capacity" defaultValue={center.capacity} placeholder="Enter capacity" onChange={handleTextChange} />
                         </Form.Group>
                         <br />
+                        <Form.Group controlId="country">
+                            <Form.Label>Country:</Form.Label>
+                            <Form.Control required as="select" name="country" placeholder="Select country" defaultValue={(countries.find((country: any) => country.label === center.country) as any)?.value} onChange={e => {
+                                console.log("e.target.value", e.target.value);
+                                // map country code to country name
+                                setFormData({ ...formData, country: (countries.find((country: any) => country.value === e.target.value) as any)?.label});
+                            }}>
+                                {countries.map((country: any) => (
+                                    <option key={country.value} value={country.value}>
+                                        {country.label}
+                                    </option>
+                                ))}
+                            </Form.Control>
+                        </Form.Group>
+                        <br></br>
                         <Form.Group controlId="address">
                             <Form.Label>Address:</Form.Label>
+                            <GooglePlacesAutocomplete
+                                autocompletionRequest={{
+                                    // map country name to code
+                                    // show default address
+                                    componentRestrictions: { country: (countries.find((country: any) => country.label === formData.country) as any)?.value}, 
+                                    types: ["route", "street_number"]
+                                    // TODO : validation for address
+                                }}
+                                selectProps={{
+                                    defaultInputValue: `${center.address}, ${center.city}`,
+                                    onChange: (newValue) => {
+                                        setFormData({ ...formData, address: newValue?.value?.description.split(',')[0], city: newValue?.value?.description.split(',')[1]});
+                                        console.log('Address:', formData.address);
+                                        console.log('City:', formData.city);
+                                    },
+                                }}
+                                
+                            />
                         </Form.Group>
                         <br></br>
                         <Button variant="success" className="float-right" style={{ height: '35px' }} type="submit">

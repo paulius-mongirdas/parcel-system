@@ -34,24 +34,25 @@ export class CenterService {
             throw error;
         }
     }
-    /*
-    async update(body: Transport): Promise<Transport> {
+    
+    async update(body: Center): Promise<Center> {
         try {
-            const transport = await this.prisma.transport.update({
+            const center = await this.prisma.center.update({
                 where: {
                     id: body.id
                 },
                 data: {
-                    type: body.type,
                     capacity: body.capacity,
-                    averageSpeed: body.averageSpeed
+                    address: body.address,
+                    city: body.city,
+                    country: body.country
                 }
             });
-            return transport;
+            return center;
         } catch (error) {
             throw error;
         }
-    }*/
+    }
     async delete(id: number): Promise<Center> {
         try {
             const center = await this.prisma.center.delete({
