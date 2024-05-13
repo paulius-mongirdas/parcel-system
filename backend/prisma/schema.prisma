@@ -22,3 +22,14 @@ model Transport {
 
   @@map("transports")
 }
+
+model Center {
+  id        Int      @id @default(autoincrement())
+
+  capacity     Int     @default(0)
+  address      String
+  city         String
+  country      String
+
+  @@map("centers")
+}

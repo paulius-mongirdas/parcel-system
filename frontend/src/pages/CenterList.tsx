@@ -11,6 +11,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import React from "react";
 import GooglePlacesAutocomplete from 'react-google-places-autocomplete';
+import { count } from "console";
 
 interface CenterData {
     id: number;
@@ -50,7 +51,7 @@ const ViewCenter = () => {
         capacity: 0,
         address: "",
         city: "",
-        country: "AW"
+        country: (countries.find((country: any) => country.value === 'AW') as any)?.label
     });
 
     const handleTextChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -104,6 +105,9 @@ const ViewCenter = () => {
                     capacity: center.capacity,
                     address: center.address,
                     city: center.city,
+                    // map center country code to country name if it exists, else show code
+                    //country: (countries.find((country: any) => country.value === center.country) as any)?.label || center.country
+                    //country: (countries.find((country: any) => country.value === center.country) as any)?.label
                     country: center.country
                 }));
                 setCenterData(center);
@@ -151,11 +155,6 @@ const ViewCenter = () => {
                 </Modal.Header>
                 <Modal.Body>
                     <Form onSubmit={handleCenterSubmit}>
-                        <Form.Group controlId="averageSpeed">
-                            <Form.Label>Average speed (km/h):</Form.Label>
-                            <Form.Control required type="number" pattern="[0-9]*" min={0} inputMode="numeric" name="averageSpeed" placeholder="Enter average speed" onChange={handleTextChange} />
-                        </Form.Group>
-                        <br></br>
                         <Form.Group controlId="capacity">
                             <Form.Label>Capacity:</Form.Label>
                             <Form.Control required type="number" pattern="[0-9]*" min={0} inputMode="numeric" name="capacity" placeholder="Enter capacity" onChange={handleTextChange} />
@@ -165,7 +164,8 @@ const ViewCenter = () => {
                             <Form.Label>Country:</Form.Label>
                             <Form.Control required as="select" name="country" placeholder="Select country" defaultValue={formData.country} onChange={e => {
                                 console.log("e.target.value", e.target.value);
-                                setFormData({ ...formData, country: e.target.value });
+                                // map country code to country name
+                                setFormData({ ...formData, country: (countries.find((country: any) => country.value === e.target.value) as any)?.label});
                             }}>
                                 {countries.map((country: any) => (
                                     <option key={country.value} value={country.value}>
@@ -179,7 +179,8 @@ const ViewCenter = () => {
                             <Form.Label>Address:</Form.Label>
                             <GooglePlacesAutocomplete
                                 autocompletionRequest={{
-                                    componentRestrictions: { country: formData.country }, 
+                                    // map country name to code
+                                    componentRestrictions: { country: (countries.find((country: any) => country.label === formData.country) as any)?.value}, 
                                     types: ["route", "street_number"]
                                     // TODO : validation for address
                                 }}
