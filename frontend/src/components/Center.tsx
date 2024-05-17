@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Row, Card, Button, Form, Modal, ToastContainer } from "react-bootstrap";
 import { toast } from "react-toastify";
 import Autocomplete from "react-google-autocomplete";
@@ -23,14 +23,18 @@ const Center: React.FC<CenterProps> = ({ center }) => {
     const [showCardOptions, setShowCardOptions] = useState(false);
     const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
+    const [countries, setCountries] = useState([]);
+
     const [formData, setFormData] = useState({
         capacity: center.capacity,
         address: center.address,
         city: center.city,
-        country: center.country
+        country: center.country,
     });
 
-    const [countries, setCountries] = useState([]);
+    const [options, setOptions] = useState({
+        componentRestrictions: { country: ""},
+    });
 
     useEffect(() => {
         fetch(
@@ -39,6 +43,10 @@ const Center: React.FC<CenterProps> = ({ center }) => {
             .then((response) => response.json())
             .then((data) => {
                 setCountries(data.countries);
+                // setOptions based on countries
+                setOptions({
+                    componentRestrictions: { country: (data.countries.find((country: any) => country.label === center.country) as any)?.value.toLowerCase() },
+                })
             });
     }, []);
 
@@ -47,6 +55,50 @@ const Center: React.FC<CenterProps> = ({ center }) => {
         setFormData({ ...formData, [name]: value });
     };
 
+    const autoCompleteRef = useRef<google.maps.places.Autocomplete | null>(null);
+    const inputRef = useRef<HTMLInputElement>(null);
+
+    const [address, setAddress] = useState(center.address);
+
+    useEffect(() => {
+        if (inputRef.current) {
+            autoCompleteRef.current = new window.google.maps.places.Autocomplete(
+                inputRef.current,
+                options
+            );
+        }
+    }, [inputRef.current, options]
+    );
+
+    useEffect(() => {
+        autoCompleteRef.current?.addListener("place_changed", () => {
+            const place = autoCompleteRef.current?.getPlace();
+            if (place && place.formatted_address) {
+                setAddress(place.formatted_address);
+
+                let city = "";
+                let address = "";
+                let number = "";
+                place.address_components?.forEach((component) => {
+                    console.log("component:", component);
+                    if (component.types.includes("locality")) {
+                        console.log("city:", component.long_name);
+                        city = component.long_name;
+                    }
+                    if (component.types.includes("route")) {
+                        console.log("address:", component.long_name);
+                        address = component.long_name;
+                    }
+                    if (component.types.includes("street_number")) {
+                        console.log("address:", component.long_name);
+                        number = component.long_name;
+                    }
+                });
+                setFormData({ ...formData, city: city, address: address + " " + number, country: formData.country, capacity: formData.capacity});
+            }
+        });
+    }, [autoCompleteRef.current]);
+    
     const handleCenterSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         console.log('Form Data:', formData);
@@ -149,7 +201,15 @@ const Center: React.FC<CenterProps> = ({ center }) => {
                             <Form.Control required as="select" name="country" placeholder="Select country" defaultValue={(countries.find((country: any) => country.label === center.country) as any)?.value} onChange={e => {
                                 console.log("e.target.value", e.target.value);
                                 // map country code to country name
-                                setFormData({ ...formData, country: (countries.find((country: any) => country.value === e.target.value) as any)?.label});
+                                setOptions({
+                                    componentRestrictions: { country: e.target.value.toLowerCase() },
+                                });
+                                setFormData({ ...formData, 
+                                    capacity: formData.capacity,
+                                    country: (countries.find((country: any) => country.value === e.target.value) as any)?.label,
+                                    address: formData.address,
+                                    city: formData.city});
+                                console.log("options", options);
                             }}>
                                 {countries.map((country: any) => (
                                     <option key={country.value} value={country.value}>
@@ -161,24 +221,11 @@ const Center: React.FC<CenterProps> = ({ center }) => {
                         <br></br>
                         <Form.Group controlId="address">
                             <Form.Label>Address:</Form.Label>
-                            <GooglePlacesAutocomplete
-                                autocompletionRequest={{
-                                    // map country name to code
-                                    // show default address
-                                    componentRestrictions: { country: (countries.find((country: any) => country.label === formData.country) as any)?.value}, 
-                                    types: ["route", "street_number"]
-                                    // TODO : validation for address
-                                }}
-                                selectProps={{
-                                    defaultInputValue: `${center.address}, ${center.city}`,
-                                    onChange: (newValue) => {
-                                        setFormData({ ...formData, address: newValue?.value?.description.split(',')[0], city: newValue?.value?.description.split(',')[1]});
-                                        console.log('Address:', formData.address);
-                                        console.log('City:', formData.city);
-                                    },
-                                }}
-                                
-                            />
+                            <Form.Control required ref={inputRef}
+                                type="text"
+                                value={address}
+                                onChange={(e) => setAddress(e.target.value)}
+                                placeholder="Enter address" />
                         </Form.Group>
                         <br></br>
                         <Button variant="success" className="float-right" style={{ height: '35px' }} type="submit">
