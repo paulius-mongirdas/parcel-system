@@ -48,7 +48,7 @@ model Package {
   address   String
   city      String
   country   String
-  postalCode  Int
+  postalCode  String
 
   length    Int
   width     Int
