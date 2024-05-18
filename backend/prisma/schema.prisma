@@ -13,6 +13,14 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum Status {
+  CREATED
+  IN_DELIVERY
+  DELIVERED
+  CANCELED
+  NOT_DELIVERED
+}
+
 model Transport {
   id        Int      @id @default(autoincrement())
 
@@ -32,4 +40,26 @@ model Center {
   country      String
 
   @@map("centers")
+}
+
+model Package {
+  id        Int      @id @default(autoincrement())
+
+  address   String
+  city      String
+  country   String
+  postalCode  Int
+
+  length    Int
+  width     Int
+  height    Int
+  weight    Int
+
+  status    Status  @default(CREATED)
+  createdAt DateTime @default(now())
+  deliveredAt  DateTime
+
+  price   Float
+
+  @@map("packages")
 }
