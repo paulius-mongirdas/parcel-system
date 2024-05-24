@@ -125,30 +125,30 @@ const ViewTransport = () => {
                 <Modal.Body>
                     <Form onSubmit={handleTransportSubmit}>
                         <Form.Group controlId="type">
-                            <Form.Label>Type:</Form.Label>
-                            <Form.Control
-                                as="select"
-                                value={formData.type}
-                                name="type"
-                                onChange={e => {
-                                    console.log("e.target.value", e.target.value);
-                                    setFormData({ ...formData, type: e.target.value });
-                                }}
-                            >
-                                <option value="local van">Local van</option>
-                                <option value="long journey van">Long journey van</option>
-                                <option value="truck">Truck</option>
-                            </Form.Control>
-                            </Form.Group>
-                            <br />
-                            <Form.Group controlId="capacity">
-                            <Form.Label>Capacity (m<sup>3</sup>):</Form.Label>
-                            <Form.Control required type="number" pattern="[0-9]*" min={0} inputMode="numeric" name="capacity" placeholder="Enter capacity" onChange={handleTextChange} />
-                            </Form.Group>
-                            <br />
-                            <Form.Group controlId="averageSpeed">
-                            <Form.Label>Average speed (km/h):</Form.Label>
-                            <Form.Control required type="number" pattern="[0-9]*" min={0} inputMode="numeric" name="averageSpeed" placeholder="Enter average speed" onChange={handleTextChange} />
+                        <Form.Label>Type:</Form.Label>
+                        <Form.Control
+                            as="select"
+                            value={formData.type}
+                            name="type"
+                            onChange={e => {
+                                console.log("e.target.value", e.target.value);
+                                setFormData({ ...formData, type: e.target.value });
+                            }}
+                        >
+                            <option value="local van">Local van</option>
+                            <option value="long journey van">Long journey van</option>
+                            <option value="truck">Truck</option>
+                        </Form.Control>
+                        </Form.Group>
+                        <br />
+                        <Form.Group controlId="capacity">
+                        <Form.Label>Capacity (m<sup>3</sup>):</Form.Label>
+                        <Form.Control required type="number" pattern="[0-9]*" min={0} inputMode="numeric" name="capacity" placeholder="Enter capacity" onChange={handleTextChange} />
+                        </Form.Group>
+                        <br />
+                        <Form.Group controlId="averageSpeed">
+                        <Form.Label>Average speed (km/h):</Form.Label>
+                        <Form.Control required type="number" pattern="[0-9]*" min={0} inputMode="numeric" name="averageSpeed" placeholder="Enter average speed" onChange={handleTextChange} />
                         </Form.Group>
                         <br></br>
                         <Button variant="success" type="submit" className="float-right" style={{ height: '35px' }}>
