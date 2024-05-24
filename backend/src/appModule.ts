@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { CarModule } from './Car/CarModule';
 import { CenterModule } from './Center/CenterModule';
+import { PackageModule } from './Package/PackageModule';
 import { ConfigModule } from '@nestjs/config';
 import { PrismaModule } from '../prisma/PrismaModule';
 
@@ -9,9 +10,10 @@ import { PrismaModule } from '../prisma/PrismaModule';
     ConfigModule.forRoot({ isGlobal: true }),
     PrismaModule,
     CarModule,
-    CenterModule
+    CenterModule,
+    PackageModule
   ],
   controllers: [],
-  providers: [],
+  providers: []
 })
 export class AppModule {}
