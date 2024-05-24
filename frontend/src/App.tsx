@@ -5,6 +5,7 @@ import Nav from "./components/Nav";
 import HomePage from "./pages/Main";
 import TransportList from "./pages/CarList";
 import CenterList from "./pages/CenterList";
+import PackageList from "./pages/PackageList";
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 const UseNav=()=>{
@@ -18,6 +19,7 @@ function App() {
         <Route path={'/'} element={<HomePage/>} />
         <Route path={'/transport'} element={<TransportList/>} />
         <Route path={'/center'} element={<CenterList/>} />
+        <Route path={'/parcel'} element={<PackageList/>} />
       </Routes>
     </BrowserRouter>
   );
