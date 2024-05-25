@@ -2,7 +2,6 @@ import axios from "axios";
 import { useEffect, useRef, useState } from "react";
 import { Row, Card, Button, Modal, Form } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
-import Moment from "react-moment";
 import moment from "moment";
 
 interface ItemData {
@@ -199,8 +198,8 @@ const Item: React.FC<ItemProps> = ({ item }) => {
                             <b>Weight:</b> {item.weight} <br />
 
                             <b>Status:</b> {item.status} <br />
-                            <b>Created At:</b> {item.createdAt.toLocaleString()} <br />
-                            <b>Delivered At:</b> {item.deliveredAt.toLocaleString()} <br />
+                            <b>Created At:</b> {moment(item.createdAt).format('YYYY-MM-DD')} <br />
+                            <b>Delivered At:</b> {moment(item.deliveredAt).format('YYYY-MM-DD')} <br />
 
                             <b>Price:</b> {item.price} <br />
                         </Card.Text>
@@ -231,8 +230,8 @@ const Item: React.FC<ItemProps> = ({ item }) => {
                         <b>Weight:</b> {item.weight} <br />
 
                         <b>Status:</b> {item.status} <br />
-                        <b>Created At:</b> {item.createdAt.toLocaleString()} <br />
-                        <b>Delivered At:</b> {item.deliveredAt.toLocaleString()} <br />
+                        <b>Created At:</b> {moment(item.createdAt).format('YYYY-MM-DD')} <br />
+                        <b>Delivered At:</b> {moment(item.deliveredAt).format('YYYY-MM-DD')} <br />
 
                         <b>Price:</b> {item.price} <br />
                     </Card.Text>

@@ -83,7 +83,7 @@ const ViewInventory = () => {
         <>
             <Nav />
             <Container className="d-flex align-items-center justify-content-center">
-                <div style={{ overflowY: 'scroll', maxHeight: '500px' }}>
+                <div style={{ overflowY: 'scroll', height: '100%' }}>
                     {itemData.map((item: ItemData, index) => (
                         <Item key={index} item={item} />
                     ))}

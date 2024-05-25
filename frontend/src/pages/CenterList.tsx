@@ -74,6 +74,8 @@ const ViewCenter = () => {
     }, [inputRef.current, options]
     );
 
+    const [isValidAddress, setIsValidAddress] = useState(true);
+
     useEffect(() => {
         autoCompleteRef.current?.addListener("place_changed", () => {
             const place = autoCompleteRef.current?.getPlace();
@@ -83,6 +85,7 @@ const ViewCenter = () => {
                 let city = "";
                 let address = "";
                 let number = "";
+                let postalCode = "";
                 place.address_components?.forEach((component) => {
                     console.log("component:", component);
                     if (component.types.includes("locality")) {
@@ -97,8 +100,19 @@ const ViewCenter = () => {
                         console.log("address:", component.long_name);
                         number = component.long_name;
                     }
+                    if (component.types.includes("postal_code")) {
+                        console.log("postal code:", component.long_name);
+                        postalCode = component.long_name;
+                    }
                 });
-                setFormData({ ...formData, city: city, address: address + " " + number, country: formData.country, capacity: formData.capacity});
+                if (city != "" && address != "" && number != "" && postalCode != "") {
+                    setIsValidAddress(true);
+                }
+                else {
+                    setIsValidAddress(false);
+                }
+                console.log("city", city, "address", address, "number", number, "postalCode", postalCode);
+                setFormData({ ...formData, city: city, address: address + " " + number, country: formData.country});
             }
         });
     }, [autoCompleteRef.current]);
@@ -170,7 +184,7 @@ const ViewCenter = () => {
             <Nav />
             <Button onClick={() => setLgShow(true)} style={{ margin: '15px' }}>Register center</Button>
             <Container className="d-flex align-items-center justify-content-center">
-                <div style={{ overflowY: 'scroll', maxHeight: '500px' }}>
+                <div style={{ overflowY: 'scroll', height: '100%' }}>
                     {centerData.map((center: CenterData, index) => (
                         <Center key={index} center={center} />
                     ))}
@@ -198,17 +212,15 @@ const ViewCenter = () => {
                         <br></br>
                         <Form.Group controlId="country">
                             <Form.Label>Country:</Form.Label>
-                            <Form.Control required as="select" name="country" placeholder="Select country" defaultValue={formData.country} onChange={e => {
+                            <Form.Control required as="select" name="country" placeholder="Select country" onChange={e => {
                                 console.log("e.target.value", e.target.value);
                                 // map country code to country name
                                 setOptions({
                                     componentRestrictions: { country: e.target.value.toLowerCase() },
                                 });
-                                setFormData({ ...formData, 
-                                    capacity: formData.capacity,
-                                    country: (countries.find((country: any) => country.value === e.target.value) as any)?.label,
-                                    address: formData.address,
-                                    city: formData.city});
+                                // might need to fix here
+                                setFormData({ ...formData, country: (countries.find((country: any) => country.value === e.target.value) as any)?.label});
+
                                 console.log("options", options);
                             }}>
                                 {countries.map((country: any) => (
@@ -220,12 +232,16 @@ const ViewCenter = () => {
                         </Form.Group>
                         <br></br>
                         <Form.Group controlId="address">
-                            <Form.Label>Address:</Form.Label>
+                        <Form.Label>Address:</Form.Label>
                             <Form.Control required ref={inputRef}
                                 type="text"
                                 value={address}
                                 onChange={(e) => setAddress(e.target.value)}
-                                placeholder="Enter address" />
+                                placeholder="Enter address"
+                                isInvalid={!isValidAddress} />
+                            <Form.Control.Feedback type="invalid">
+                                Please enter a valid address.
+                            </Form.Control.Feedback>
                         </Form.Group>
                         <br></br>
                         <Button variant="success" type="submit" className="float-right" style={{ height: '35px' }}>
