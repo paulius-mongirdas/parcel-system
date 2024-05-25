@@ -20,8 +20,6 @@ enum Status {
 interface FilterData {
     createdDateFrom: Date;
     createdDateTo: Date;
-    deliveredDateFrom: Date;
-    deliveredDateTo: Date;
 
     status: string[];
     priceFrom: number;
@@ -55,14 +53,12 @@ const showToastMessage = (message: string) => {
     });
 };
 
-const ViewInventory = () => {
+const ViewReport = () => {
     const [refreshing, setRefresh] = useState(false);
 
     const [formData, setFormData] = useState<FilterData>({
         createdDateFrom: moment(Date.parse("2018-01-01T00:00:00.000Z")).toDate(),
         createdDateTo: moment(Date.now()).toDate(),
-        deliveredDateFrom: moment(Date.parse("2018-01-01T00:00:00.000Z")).toDate(),
-        deliveredDateTo: moment(Date.now()).toDate(),
 
         status: [Status.CREATED, Status.IN_DELIVERY, Status.DELIVERED, Status.CANCELED, Status.NOT_DELIVERED],
         priceFrom: 0,
@@ -96,8 +92,6 @@ const ViewInventory = () => {
                 ...formData,
                 createdDateFrom: new Date(formData.createdDateFrom),
                 createdDateTo: new Date(formData.createdDateTo),
-                deliveredDateFrom: new Date(formData.deliveredDateFrom),
-                deliveredDateTo: new Date(formData.deliveredDateTo),
                 status: formData.status,
                 priceFrom: +formData.priceFrom,
                 priceTo: +formData.priceTo,
@@ -149,18 +143,6 @@ const ViewInventory = () => {
                             <Form.Group controlId="createdDateTo">
                                 <Form.Label>Created Date To</Form.Label>
                                 <Form.Control required type="date" name="createdDateTo" onChange={handleTextChange} defaultValue={moment(Date.now()).format('YYYY-MM-DD')} />
-                            </Form.Group>
-                        </Col>
-                        <Col xs="auto">
-                            <Form.Group controlId="deliveredDateFrom">
-                                <Form.Label>Delivered Date From</Form.Label>
-                                <Form.Control required type="date" name="deliveredDateFrom" onChange={handleTextChange} defaultValue={moment(Date.parse("2018-01-01T00:00:00.000Z")).format('YYYY-MM-DD')} />
-                            </Form.Group>
-                        </Col>
-                        <Col xs="auto">
-                            <Form.Group controlId="deliveredDateTo">
-                                <Form.Label>Delivered Date To</Form.Label>
-                                <Form.Control required type="date" name="deliveredDateTo" onChange={handleTextChange} defaultValue={moment(Date.now()).format('YYYY-MM-DD')} />
                             </Form.Group>
                         </Col>
                     </Row>
@@ -215,4 +197,4 @@ const ViewInventory = () => {
         </>
     );
 }
-export default ViewInventory;
+export default ViewReport;

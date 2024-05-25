@@ -5,8 +5,6 @@ import { Package } from '@prisma/client';
 interface FilterData {
     createdDateFrom: Date;
     createdDateTo: Date;
-    deliveredDateFrom: Date;
-    deliveredDateTo: Date;
 
     status: string[];
     priceFrom: number;
@@ -79,8 +77,6 @@ export class InventoryService {
                     AND: [
                         { createdAt: { gte: query.createdDateFrom } },
                         { createdAt: { lte: query.createdDateTo } },
-                        { deliveredAt: { gte: query.deliveredDateFrom } },
-                        { deliveredAt: { lte: query.deliveredDateTo } },
                         { status: { in: query.status } },
                         { price: { gte: query.priceFrom } },
                         { price: { lte: query.priceTo } },
