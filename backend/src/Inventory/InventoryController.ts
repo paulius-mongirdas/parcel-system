@@ -2,6 +2,26 @@ import { Controller, Post, Body, Get, Query, Req, Put, Param, Delete } from '@ne
 import { InventoryService } from './InventoryService';
 import { Package } from '@prisma/client';
 
+enum Status {
+    CREATED = "CREATED",
+    IN_DELIVERY = "IN_DELIVERY",
+    DELIVERED = "DELIVERED",
+    CANCELED = "CANCELED",
+    NOT_DELIVERED = "NOT_DELIVERED",
+}
+interface FilterData {
+    createdDateFrom: Date;
+    createdDateTo: Date;
+    deliveredDateFrom: Date;
+    deliveredDateTo: Date;
+
+    status: string[];
+    priceFrom: number;
+    priceTo: number;
+    weightFrom: number;
+    weightTo: number;
+}
+
 @Controller('inventory')
 export class InventoryController {
     constructor(private readonly inventoryService: InventoryService) { }
@@ -17,5 +37,9 @@ export class InventoryController {
     @Delete('delete/:id')
     async delete(@Param('id') id: number): Promise<Package> {
         return this.inventoryService.delete(id);
+    }
+    @Post('report')
+    async selectItems(@Body() query: FilterData): Promise<Package[]> {
+        return this.inventoryService.filter(query);
     }
 }

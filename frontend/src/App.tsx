@@ -5,6 +5,7 @@ import TransportList from "./pages/CarList";
 import CenterList from "./pages/CenterList";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Inventory from './pages/Inventory';
+import Report from './pages/Report';
 
 const UseNav=()=>{
   return(<Nav/>);
@@ -18,6 +19,7 @@ function App() {
         <Route path={'/transport'} element={<TransportList/>} />
         <Route path={'/center'} element={<CenterList/>} />
         <Route path={'/inventory'} element={<Inventory/>} />
+        <Route path={'/report'} element={<Report/>} />
       </Routes>
     </BrowserRouter>
   );

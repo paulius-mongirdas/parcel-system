@@ -68,7 +68,7 @@ const ViewTransport = () => {
             console.error('Error submitting post:', error);
         }
     };
-    
+
     // openCarList()
     const openCarList = useEffect(() => {
         axios.get(`http://localhost:3333/transport/all`)
@@ -139,14 +139,14 @@ const ViewTransport = () => {
                                 <option value="long journey van">Long journey van</option>
                                 <option value="truck">Truck</option>
                             </Form.Control>
-                            </Form.Group>
-                            <br />
-                            <Form.Group controlId="capacity">
+                        </Form.Group>
+                        <br />
+                        <Form.Group controlId="capacity">
                             <Form.Label>Capacity (m<sup>3</sup>):</Form.Label>
                             <Form.Control required type="number" pattern="[0-9]*" min={0} inputMode="numeric" name="capacity" placeholder="Enter capacity" onChange={handleTextChange} />
-                            </Form.Group>
-                            <br />
-                            <Form.Group controlId="averageSpeed">
+                        </Form.Group>
+                        <br />
+                        <Form.Group controlId="averageSpeed">
                             <Form.Label>Average speed (km/h):</Form.Label>
                             <Form.Control required type="number" pattern="[0-9]*" min={0} inputMode="numeric" name="averageSpeed" placeholder="Enter average speed" onChange={handleTextChange} />
                         </Form.Group>
@@ -154,7 +154,7 @@ const ViewTransport = () => {
                         <Button variant="success" type="submit" className="float-right" style={{ height: '35px' }}>
                             Register
                         </Button>
-                        </Form>
+                    </Form>
                 </Modal.Body>
             </Modal>
         </>
