@@ -21,6 +21,7 @@ enum Status {
   NOT_DELIVERED
 }
 
+
 model Transport {
   id        Int      @id @default(autoincrement())
 
@@ -34,32 +35,50 @@ model Transport {
 model Center {
   id        Int      @id @default(autoincrement())
 
-  capacity     Int     @default(0)
-  address      String
-  city         String
-  country      String
+  capacity  Int      @default(0)
+  address   String
+  city      String
+  country   String
+
+  // Relation field for the Package model
+  packages  Package[]
 
   @@map("centers")
 }
 
 model Package {
-  id        Int      @id @default(autoincrement())
+  id          Int      @id @default(autoincrement())
 
-  address   String
-  city      String
-  country   String
+  address     String
+  city        String
+  country     String
   postalCode  Int
 
-  length    Int
-  width     Int
-  height    Int
-  weight    Int
+  length      Int
+  width       Int
+  height      Int
+  weight      Int
 
-  status    Status  @default(CREATED)
-  createdAt DateTime @default(now())
-  deliveredAt  DateTime
+  status      Status   @default(CREATED)
+  createdAt   DateTime @default(now())
+  deliveredAt DateTime?
 
-  price   Float
+  price       Float
+
+  // Foreign key and relation field to Center model
+  centerId    Int
+  center      Center   @relation(fields: [centerId], references: [id])
 
   @@map("packages")
+}
+
+
+model Message {
+  id        Int      @id @default(autoincrement())
+
+  phoneNumber      String
+  text     String
+  status  String
+
+  @@map("messages")
 }

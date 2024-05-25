@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { CarModule } from './Car/CarModule';
 import { CenterModule } from './Center/CenterModule';
 import { PackageModule } from './Package/PackageModule';
+import { MessageModule } from './Message/MessageModule';
 import { ConfigModule } from '@nestjs/config';
 import { PrismaModule } from '../prisma/PrismaModule';
 
@@ -11,7 +12,8 @@ import { PrismaModule } from '../prisma/PrismaModule';
     PrismaModule,
     CarModule,
     CenterModule,
-    PackageModule
+    PackageModule,
+    MessageModule
   ],
   controllers: [],
   providers: []

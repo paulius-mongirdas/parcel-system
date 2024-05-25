@@ -34,7 +34,10 @@ export class PackageService {
                     status: body.status,
                     createdAt: body.createdAt,
                     deliveredAt: body.deliveredAt,
-                    price: body.price
+                    price: body.price,
+                    center: {
+                        connect: { id: body.centerId }
+                    }
                 }
             });
             return parcel;

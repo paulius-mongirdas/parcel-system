@@ -17,7 +17,8 @@
     "express": "^4.19.2",
     "next": "^14.2.2",
     "next-connect": "^1.0.0",
-    "react-google-autocomplete": "^2.7.3"
+    "react-google-autocomplete": "^2.7.3",
+    "twilio": "^5.1.0"
   },
   "scripts": {
     "dev": "nodemon src/index.ts",
