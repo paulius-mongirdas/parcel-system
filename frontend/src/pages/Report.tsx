@@ -8,6 +8,8 @@ import "react-toastify/dist/ReactToastify.css";
 import Item from "../components/Item";
 import Form from 'react-bootstrap/Form';
 import moment from "moment";
+import { Table, TR, TH, TD } from '@ag-media/react-pdf-table';
+import { PDFViewer, Document, Page, StyleSheet, View, Text } from '@react-pdf/renderer';
 
 enum Status {
     CREATED = "CREATED",
@@ -105,7 +107,10 @@ const ViewReport = () => {
             console.log('Response from server:', response.data);
             setFilteredData(response.data);
             //setRefresh(true);
-            localStorage.setItem("Status", "Report generated Successfully"); // Set the flag
+            if (response.data.length > 0)
+                localStorage.setItem("Status", "Report generated Successfully"); // Set the flag
+            else
+                localStorage.setItem("Status", "No data found for the selected filters"); // Set the flag
         } catch (error) {
             console.error('Error submitting post:', error);
         }
@@ -121,6 +126,19 @@ const ViewReport = () => {
             localStorage.removeItem("Status"); // Clear the flag   
             setRefresh(false)
         }
+    });
+
+    // Create styles
+    const styles = StyleSheet.create({
+        page: {
+            backgroundColor: '#E4E4E4',
+            padding: 10,
+        },
+        section: {
+            margin: 10,
+            padding: 10,
+            flexGrow: 1,
+        },
     });
 
     return (
@@ -187,13 +205,51 @@ const ViewReport = () => {
                     </Button>
                 </div>
             </Form>
-            <Container className="d-flex align-items-center justify-content-center">
-                <div style={{ overflowY: 'scroll', maxHeight: '500px' }}>
-                    {filteredData.map((item: ItemData, index) => (
-                        <Item key={index} item={item} />
-                    ))}
-                </div>
-            </Container>
+            {filteredData.length > 0 &&
+                <PDFViewer style={{ width: "100%", height: "100vh" }}>
+                    <Document>
+                        <Page size="A4" style={styles.page}>
+                            <View><Text style={{
+                                        fontSize: 18,
+                                        marginBottom: 16,
+                                        textAlign: 'center',
+                                    }}>Parcel report</Text></View>
+                                    
+                            <Table tdStyle={{ padding: '2px'}}>
+                                <TH style={{ fontSize: 8 }}>
+                                    <TD>Address</TD>
+                                    <TD>City</TD>
+                                    <TD>Country</TD>
+                                    <TD>Postal Code</TD>
+                                    <TD>Length</TD>
+                                    <TD>Width</TD>
+                                    <TD>Height</TD>
+                                    <TD>Weight</TD>
+                                    <TD>Status</TD>
+                                    <TD>Created At</TD>
+                                    <TD>Delivered At</TD>
+                                    <TD>Price</TD>
+                                </TH>
+                                {filteredData.map((item: ItemData, index) => (
+                                    <TR key={index} style={{ fontSize: 6 }}>
+                                        <TD>{item.address}</TD>
+                                        <TD>{item.city}</TD>
+                                        <TD>{item.country}</TD>
+                                        <TD>{item.postalCode}</TD>
+                                        <TD>{item.length}</TD>
+                                        <TD>{item.width}</TD>
+                                        <TD>{item.height}</TD>
+                                        <TD>{item.weight}</TD>
+                                        <TD>{item.status}</TD>
+                                        <TD>{moment(item.createdAt).format('YYYY-MM-DD')}</TD>
+                                        <TD>{moment(item.deliveredAt).format('YYYY-MM-DD')}</TD>
+                                        <TD>{item.price}</TD>
+                                    </TR>
+                                ))}
+                            </Table>
+                        </Page>
+                    </Document>
+                </PDFViewer>}
         </>
     );
 }

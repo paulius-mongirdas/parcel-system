@@ -8,6 +8,7 @@
     "@fortawesome/react-fontawesome": "^0.2.0",
     "@googlemaps/js-api-loader": "^1.16.6",
     "@react-google-maps/api": "^2.19.3",
+    "@react-pdf/renderer": "^3.4.4",
     "@testing-library/jest-dom": "^6.4.2",
     "@testing-library/react": "^15.0.2",
     "@testing-library/user-event": "^14.5.2",
@@ -55,6 +56,7 @@
     ]
   },
   "devDependencies": {
+    "@ag-media/react-pdf-table": "^1.0.1",
     "react-router-dom": "^6.22.3"
   }
 }
