@@ -131,7 +131,6 @@ const ViewReport = () => {
     // Create styles
     const styles = StyleSheet.create({
         page: {
-            backgroundColor: '#E4E4E4',
             padding: 10,
         },
         section: {
@@ -210,13 +209,14 @@ const ViewReport = () => {
                     <Document>
                         <Page size="A4" style={styles.page}>
                             <View><Text style={{
-                                        fontSize: 18,
-                                        marginBottom: 16,
-                                        textAlign: 'center',
-                                    }}>Parcel report</Text></View>
-                                    
-                            <Table tdStyle={{ padding: '2px'}}>
-                                <TH style={{ fontSize: 8 }}>
+                                fontSize: 18,
+                                marginBottom: 12,
+                                textAlign: 'center',
+                            }}>Parcel report</Text></View>
+
+                            <Table tdStyle={{ padding: '2px' }}>
+                                <TH style={{ fontSize: 8, backgroundColor: '#ddd' }}>
+                                    <TD>#</TD>
                                     <TD>Address</TD>
                                     <TD>City</TD>
                                     <TD>Country</TD>
@@ -231,7 +231,8 @@ const ViewReport = () => {
                                     <TD>Price</TD>
                                 </TH>
                                 {filteredData.map((item: ItemData, index) => (
-                                    <TR key={index} style={{ fontSize: 6 }}>
+                                    <TR key={index} style={{ fontSize: 6}}>
+                                        <TD>{index + 1}</TD>
                                         <TD>{item.address}</TD>
                                         <TD>{item.city}</TD>
                                         <TD>{item.country}</TD>
