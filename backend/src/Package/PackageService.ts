@@ -71,6 +71,23 @@ export class PackageService {
             throw error;
         }
     }
+    async updateStatus(id: number): Promise<Package> {
+        try {
+            const parcel = await this.prisma.package.update({
+                where: {
+                    id: Number(id)
+                },
+                data: {
+                    status: "DELIVERED",
+                    deliveredAt: new Date() 
+                }
+            });
+            return parcel;
+        } catch (error) {
+            throw error;
+        }
+    }
+    
     async delete(id: number): Promise<Package> {
         try {
             const parcel = await this.prisma.package.delete({

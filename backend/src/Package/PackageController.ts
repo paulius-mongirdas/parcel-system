@@ -18,6 +18,10 @@ export class PackageController {
     async update(@Body() body: Package): Promise<Package> {
         return this.packageService.update(body);
     }
+    @Put('update/delivered/:id')
+    async updateStatus(@Param('id') id: number): Promise<Package> {
+        return this.packageService.updateStatus(id);
+    }
     @Delete('delete/:id')
     async delete(@Param('id') id: number): Promise<Package> {
         return this.packageService.delete(id);

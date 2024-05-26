@@ -26,7 +26,8 @@ function SendMessageForm() {
     const [formData, setFormData] = useState({
         phoneNumber: "",
         text: "",
-        status: 'CREATED'
+        status: 'CREATED',
+        packageId: ""  // New state for numeric input
     });
 
     const handleTextChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -39,7 +40,6 @@ function SendMessageForm() {
         console.log('Form Data:', formData);
         try {
             const response = await axios.post('http://localhost:3333/message/add', {
-                ...formData,
                 phoneNumber: formData.phoneNumber,
                 text: formData.text,
                 status: formData.status
@@ -48,6 +48,9 @@ function SendMessageForm() {
                     'Content-Type': 'application/json',
                 },
             });
+
+            
+            await axios.put(`http://localhost:3333/package/update/delivered/${formData.packageId}`);
             setLgShow(false);
             window.location.reload();
             console.log('Response from server:', response.data);
@@ -98,8 +101,19 @@ function SendMessageForm() {
                             />
                         </Form.Group>
 
+                        <Form.Group controlId="formPackageId">
+                            <Form.Label>Package ID</Form.Label>
+                            <Form.Control
+                                type="number"
+                                name="packageId"
+                                value={formData.packageId}
+                                onChange={handleTextChange}
+                                required
+                            />
+                        </Form.Group>
+
                         <Button variant="primary" type="submit" className="mt-3">
-                            Send Message
+                            Send Message and Update Package
                         </Button>
                     </Form>
                 </div>
@@ -142,8 +156,19 @@ function SendMessageForm() {
                             />
                         </Form.Group>
 
+                        <Form.Group controlId="modalFormPackageId">
+                            <Form.Label>Package ID</Form.Label>
+                            <Form.Control
+                                type="number"
+                                name="packageId"
+                                value={formData.packageId}
+                                onChange={handleTextChange}
+                                required
+                            />
+                        </Form.Group>
+
                         <Button variant="success" type="submit" className="float-right" style={{ height: '35px' }}>
-                            Send Message
+                            Send Message and Update Package
                         </Button>
                     </Form>
                 </Modal.Body>

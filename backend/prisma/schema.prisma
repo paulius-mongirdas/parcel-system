@@ -53,19 +53,15 @@ model Package {
   city        String
   country     String
   postalCode  Int
-
   length      Int
   width       Int
   height      Int
   weight      Int
-
   status      Status   @default(CREATED)
   createdAt   DateTime @default(now())
   deliveredAt DateTime?
-
   price       Float
 
-  // Foreign key and relation field to Center model
   centerId    Int
   center      Center   @relation(fields: [centerId], references: [id])
 
