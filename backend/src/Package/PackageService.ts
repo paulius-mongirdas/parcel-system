@@ -132,4 +132,82 @@ export class PackageService {
             throw error;
         }
     }
+
+    async calculateRegularPrice(distance: number, weight: number, length: number, width: number, height: number): Promise<number> {
+        let volume = length * width * height;
+        let distancePrice = distance * 0.0025;
+        let weightPrice = weight * 0.5;
+        let volumePrice = volume * 0.0002;
+        return distancePrice + weightPrice + volumePrice;
+    }
+
+    async calculateFastDeliveryPrice(distance: number, weight: number, length: number, width: number, height: number): Promise<number> {
+        let volume = length * width * height;
+        let distancePrice = distance * 0.0025;
+        let weightPrice = weight * 0.5;
+        let volumePrice = volume * 0.0002;
+        let multiplier = 1.375;
+        return (distancePrice + weightPrice + volumePrice) * multiplier;
+    }
+
+    async calculateSameDayPrice(distance: number, weight: number, length: number, width: number, height: number): Promise<number> {
+        let volume = length * width * height;
+        let distancePrice = distance * 0.0025;
+        let weightPrice = weight * 0.5;
+        let volumePrice = volume * 0.0002;
+        let multiplier = 1.85;
+        return (distancePrice + weightPrice + volumePrice) * multiplier;
+    }
+
+    async checkIfInsuranceNeeded(distance: number, weight: number, length: number, width: number, height: number): Promise<boolean> {
+        if (weight * length * width * height > 200000 || distance > 100000) {
+            return true;
+        }
+        return false;
+    }
+
+    async updatePricesWithInsurances(price: number): Promise<number> {
+        return price + 10;
+    }
+
+    async checkIfCustomsTaxNeeded(country: string): Promise<boolean> {
+        if (country === "US") {
+            return true;
+        }
+        return false;
+    }
+
+    async updatePriceWithCustomsTax(weight: number, price: number): Promise<number> {
+        return price + 20;
+    }
+
+    async calculatePrice(country: string, distance: number, weight: number, length: number, width: number, height: number): Promise<Number[]> {
+        const [regularPrice, fastDeliveryPrice, sameDayPrice] = await Promise.all([
+            this.calculateRegularPrice(distance, weight, length, width, height),
+            this.calculateFastDeliveryPrice(distance, weight, length, width, height),
+            this.calculateSameDayPrice(distance, weight, length, width, height)
+        ]);
+        let prices = [
+            regularPrice,
+            fastDeliveryPrice,
+            sameDayPrice
+        ];
+
+        const insuranceNeeded = await this.checkIfInsuranceNeeded(distance, weight, length, width, height);
+        if (insuranceNeeded) {
+            prices = await Promise.all(prices.map(async (p) => {
+                p = await this.updatePricesWithInsurances(p);
+                return p;
+            }));
+        }
+
+        const customsTaxNeeded = await this.checkIfCustomsTaxNeeded(country);
+        if (customsTaxNeeded) {
+            prices = await Promise.all(prices.map(async (p) => {
+                p = await this.updatePriceWithCustomsTax(weight, p);
+                return p;
+            }));
+        }
+        return prices;
+    }
 }

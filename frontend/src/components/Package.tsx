@@ -35,9 +35,7 @@ enum Status {
 }
 
 const Package: React.FC<PackageProps> = ({ parcel }) => {
-    const [showCardDetails, setShowCardDetails] = useState(false);
     const [showCardOptions, setShowCardOptions] = useState(false);
-    const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
     const [showCancelConfirm, setShowCancelConfirm] = useState(false);
 
     const [formData, setFormData] = useState({
@@ -54,65 +52,6 @@ const Package: React.FC<PackageProps> = ({ parcel }) => {
         deliveredAt: parcel.deliveredAt,
         price: parcel.price
     });
-
-    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-        const { name, value, type } = e.target;
-        let processedValue: any = value;
-    
-        if (type === 'number') {
-          processedValue = parseFloat(value);
-        } else if (type === 'date') {
-          processedValue = value; // Date values are typically handled as strings in YYYY-MM-DD format
-        } else if (name === 'status') {
-          processedValue = value as Status;
-        }
-
-        setFormData({ ...formData, [name]: processedValue });
-    };
-
-    const handlePackageSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
-        console.log('Form Data:', formData);
-        try {
-            const response = await axios.put('http://localhost:3333/package/update', {
-                ...formData,
-                id: +parcel.id,
-                address: formData.address,
-                city: formData.city,
-                country: formData.country,
-                postalCode: +formData.postalCode,
-                length: +formData.length,
-                width: +formData.width,
-                height: +formData.height,
-                weight: +formData.weight,
-                status: formData.status,
-                createdAt: formData.createdAt,
-                deliveredAt: formData.deliveredAt,
-                price: +formData.price
-            }, {
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            });
-            setShowCardDetails(false);
-            localStorage.setItem("Status", "Parcel updated Successfully"); // Set the flag
-            window.location.reload();
-        } catch (error) {
-            console.error('Error submitting post:', error);
-        }
-    };
-
-    const handleDelete = async () => {
-        try {
-            const response = await axios.delete(`http://localhost:3333/package/delete/${parcel.id}`);
-            console.log('Response from server:', response.data);
-            setShowDeleteConfirm(false);
-            localStorage.setItem("Status", "Parcel removed Successfully"); // Set the flag
-            window.location.reload();
-        } catch (error) {
-            console.error('Error submitting post:', error);
-        }
-    }
     
     const handleCancel = async () => {
         try {
@@ -179,11 +118,15 @@ const Package: React.FC<PackageProps> = ({ parcel }) => {
                         <b>Height:</b> {parcel.height} <br />
                         <b>Weight:</b> {parcel.weight} <br />
                         <b>Status:</b> {parcel.status} <br />
-                        <b>Created at:</b> {parcel.createdAt.toString()} <br />
-                        <b>Delivered at:</b> {parcel.deliveredAt.toString()} <br />
+                        <b>Created at:</b> {parcel.createdAt.toString().split('T')[0] +
+                                            ' ' +
+                                            parcel.createdAt.toString().split('T')[1].split('.')[0]} <br />
+                        <b>Delivered at:</b> {parcel.deliveredAt.toString().split('T')[0] +
+                                            ' ' +
+                                            parcel.deliveredAt.toString().split('T')[1].split('.')[0]} <br />
                         <b>Price:</b> {parcel.price} <br />
                     </Card.Text>
-                    <Button variant="primary" style={{ height: '35px' }} onClick={function () { setShowCardOptions(false); setShowDeleteConfirm(true) }}>
+                    <Button variant="primary" style={{ height: '35px' }} onClick={function () { setShowCardOptions(false); setShowCancelConfirm(true) }}>
                         Cancel
                     </Button>
                 </Modal.Body>
@@ -191,8 +134,8 @@ const Package: React.FC<PackageProps> = ({ parcel }) => {
 
             <Modal
                 size="lg"
-                show={showDeleteConfirm}
-                onHide={() => setShowDeleteConfirm(false)}
+                show={showCancelConfirm}
+                onHide={() => setShowCancelConfirm(false)}
                 aria-labelledby="example-modal-sizes-title-lg"
             >
                 <Modal.Header closeButton>
