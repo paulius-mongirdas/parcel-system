@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Get, Query, Req, Put, Param, Delete } from '@nestjs/common';
+import { Controller, Post, Body, Get, Query, Req, Put, Param, Delete, ParseIntPipe } from '@nestjs/common';
 import { CarService } from './CarService';
 import { Transport } from '@prisma/client';
 
@@ -9,6 +9,10 @@ export class CarController {
     @Get('all')
     async select(): Promise<any> {
         return this.carService.select();
+    }
+    @Get('filtered/:id')
+    async selectFiltered(@Param('id', ParseIntPipe) id: number): Promise<any> {
+        return this.carService.selectFiltered(id);
     }
     @Post('add')
     async insertCar(@Body() body: Transport): Promise<Transport> {
