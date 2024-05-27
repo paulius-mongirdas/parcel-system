@@ -89,7 +89,8 @@ const ViewPackage = () => {
         componentRestrictions: { country: formData.country.toLowerCase() },
     });
     
-    useEffect(() => { 
+    // openCenterList()
+    const openCenterList = useEffect(() => { 
         fetch("https://valid.layercode.workers.dev/list/countries?format=select&flags=true&value=code")
             .then((response) => response.json())
             .then((data) => {
@@ -134,10 +135,11 @@ const ViewPackage = () => {
         }
     }, [inputRef.current, options]);
     
-    useEffect(() => {
-        axios.get(`http://localhost:3333/package/all`)
+    // openPackageList()
+    const openPackageList = useEffect(() => {
+        axios.get(`http://localhost:3333/package/all`) // select()
             .then(response => {
-                setPackageData(response.data);
+                setPackageData(response.data); // packages
             })
             .catch(error => {
                 console.error(error);
@@ -173,10 +175,6 @@ const ViewPackage = () => {
     const handlePackageSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
     
-        // if (!formData.address || !formData.city || !formData.country || !formData.postalCode) {
-        //     setErrors({ address: 'Address, city, country and postal code fields are required.' });
-        //     return;
-        // }
         console.log('Form data:', formData);
         try {
             const packageLatLng = await getLatLngFromAddress(formData.address + ', ' + formData.city + ', ' + formData.country); 
@@ -308,6 +306,8 @@ const ViewPackage = () => {
         <>
             <Nav />
             <Button onClick={() => setLgShow(true)} style={{ margin: '15px' }}>Register parcel</Button>
+
+            {/* show packages */}
             <Container className="d-flex align-items-center justify-content-center">
                 <div style={{ overflowY: 'scroll', maxHeight: '500px' }}>
                     {packageData.map((parcel: PackageData, index) => (

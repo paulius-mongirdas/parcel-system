@@ -52,21 +52,6 @@ const Package: React.FC<PackageProps> = ({ parcel }) => {
         deliveredAt: parcel.deliveredAt,
         price: parcel.price
     });
-
-    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-        const { name, value, type } = e.target;
-        let processedValue: any = value;
-    
-        if (type === 'number') {
-          processedValue = parseFloat(value);
-        } else if (type === 'date') {
-          processedValue = value; // Date values are typically handled as strings in YYYY-MM-DD format
-        } else if (name === 'status') {
-          processedValue = value as Status;
-        }
-
-        setFormData({ ...formData, [name]: processedValue });
-    };
     
     const handleCancel = async () => {
         try {
