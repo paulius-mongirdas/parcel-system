@@ -12,7 +12,6 @@ export class RouteService {
         return length * width * height;
     }
 
-
     async calculateDistance(centerAddress: string, packageAddress: string): Promise<number> {
         const apiKey = 'AIzaSyBFsTW0Z6atmDnBTAC4XRPHeO_wYiW2Hws';
         const url = `https://maps.googleapis.com/maps/api/distancematrix/json?origins=${encodeURIComponent(centerAddress)}&destinations=${encodeURIComponent(packageAddress)}&key=${apiKey}`;
@@ -46,13 +45,22 @@ export class RouteService {
         centerAddress: string,
         packages: PackageData[]
     ): Promise<{ acceptedPackages: PackageData[] }> {
+
+        const [volumes, distances] = await Promise.all([
+            Promise.all(packages.map(pkg => this.calculateVolume(pkg.length, pkg.width, pkg.height))),
+            Promise.all(packages.map(pkg => 
+                this.calculateDistance(centerAddress, `${pkg.address}, ${pkg.city}, ${pkg.country}`)
+            ))
+        ]);
+
         let totalVolume = 0;
         let totalWeight = 0;
         const acceptedPackages: PackageData[] = [];
 
-        for (const pkg of packages) {
-            const volume = this.calculateVolume(pkg.length, pkg.width, pkg.height);
-            const distance = await this.calculateDistance(centerAddress, `${pkg.address}, ${pkg.city}, ${pkg.country}`);
+        for (let i = 0; i < packages.length; i++) {
+            const pkg = packages[i];
+            const volume = volumes[i];
+            const distance = distances[i];
 
             if (this.checkCar(transport, distance) && totalVolume + volume <= transport.capacity && totalWeight + pkg.weight <= transport.weight) {
                 totalVolume += volume;
@@ -63,5 +71,4 @@ export class RouteService {
 
         return { acceptedPackages };
     }
-
 }
