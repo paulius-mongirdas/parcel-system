@@ -12,8 +12,10 @@ const Nav: React.FC<{}> = () => {
                 <Navbar.Collapse className="justify-content-start">
                     <Navi>
                         <Navi.Link href="/">Home</Navi.Link>
-                        <Navi.Link href="/transport">Transports</Navi.Link>
-                        <Navi.Link href="/center">Centers</Navi.Link>
+                        <Navi.Link href="/transport">Transport</Navi.Link>
+                        <Navi.Link href="/center">Center</Navi.Link>
+                        <Navi.Link href="/parcel">Parcels</Navi.Link>
+                        <Navi.Link href="/message">Send Message</Navi.Link>
                         <Navi.Link href="/inventory">Inventory</Navi.Link>
                         <Navi.Link href="/report">Parcel Report</Navi.Link>
                     </Navi>

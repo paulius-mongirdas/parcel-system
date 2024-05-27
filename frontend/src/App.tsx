@@ -3,6 +3,8 @@ import Nav from "./components/Nav";
 import HomePage from "./pages/Main";
 import TransportList from "./pages/CarList";
 import CenterList from "./pages/CenterList";
+import PackageList from "./pages/PackageList";
+import SendMessages from "./pages/SendMessage"
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Inventory from './pages/Inventory';
 import Report from './pages/Report';
@@ -20,6 +22,8 @@ function App() {
         <Route path={'/center'} element={<CenterList/>} />
         <Route path={'/inventory'} element={<Inventory/>} />
         <Route path={'/report'} element={<Report/>} />
+        <Route path={'/parcel'} element={<PackageList/>} />
+        <Route path={'/message'} element={<SendMessages/>} />
       </Routes>
     </BrowserRouter>
   );
