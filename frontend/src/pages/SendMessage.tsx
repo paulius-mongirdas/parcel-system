@@ -27,7 +27,7 @@ function SendMessageForm() {
         phoneNumber: "",
         text: "",
         status: 'CREATED',
-        packageId: ""  // New state for numeric input
+        packageId: ""  
     });
 
     const handleTextChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -35,7 +35,7 @@ function SendMessageForm() {
         setFormData({ ...formData, [name]: value });
     };
 
-    const handleMessageSubmit = async (e: React.FormEvent) => {
+    const submitMessage = async (e: React.FormEvent) => {
         e.preventDefault();
         console.log('Form Data:', formData);
         try {
@@ -55,28 +55,18 @@ function SendMessageForm() {
             window.location.reload();
             console.log('Response from server:', response.data);
             setRefresh(true);
-            localStorage.setItem("Status", "Message sent Successfully"); // Set the flag
+            localStorage.setItem("Status", "Message sent Successfully");
         } catch (error) {
             console.error('Error submitting post:', error);
         }
     };
-
-    useEffect(() => {
-        fetch(
-            "https://valid.layercode.workers.dev/list/countries?format=select&flags=true&value=code"
-        )
-            .then((response) => response.json())
-            .then((data) => {
-                setNumber(data.phoneNumber);
-            });
-    }, []);
 
     return (
         <>
             <Nav />
             <Container className="d-flex align-items-center justify-content-center" style={{ minHeight: "100vh" }}>
                 <div className="w-100" style={{ maxWidth: "400px" }}>
-                    <Form onSubmit={handleMessageSubmit}>
+                    <Form onSubmit={submitMessage}>
                         <Form.Group controlId="formPhoneNumber">
                             <Form.Label>Phone Number</Form.Label>
                             <Form.Control
@@ -131,7 +121,7 @@ function SendMessageForm() {
                     </Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <Form onSubmit={handleMessageSubmit}>
+                    <Form onSubmit={submitMessage}>
                         <Form.Group controlId="modalFormPhoneNumber">
                             <Form.Label>Phone Number</Form.Label>
                             <Form.Control
