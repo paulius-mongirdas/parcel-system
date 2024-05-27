@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import Container from 'react-bootstrap/Container';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
@@ -76,6 +76,7 @@ const Transports = () => {
     const navigate = useNavigate();
     const [lgShow, setLgShow] = useState(false);
     const [validated, setValidated] = useState(false);
+    const modalRef = useRef<HTMLDivElement>(null);
 
     const [transportData, setTransportData] = useState<TransportData[]>([]);
     const [centerData, setCenterData] = useState<CenterData[]>([]);
@@ -97,7 +98,7 @@ const Transports = () => {
         setFormData({ ...formData, [name]: value });
     };
 
-    //1.
+   
     const showCarList = () => {
         axios.get(`http://localhost:3333/transport/all`)
             .then(response => {
@@ -117,11 +118,12 @@ const Transports = () => {
             });
     };
 
+  
     useEffect(() => {
         showCarList();
     }, [navigate]);
 
-    // Fetch center data
+
     useEffect(() => {
         axios.get(`http://localhost:3333/center/all`)
             .then(response => {
@@ -237,7 +239,8 @@ const Transports = () => {
     
                     setLgShow(false);
                     setSelectedTransport(null);
-                    showToastMessage("Packages sorted into the selected transport!");
+                    console.log("Toast Message Called");
+                   showToastMessage("Packages sorted into the selected transport!");
                 } else {
                     showToastMessage("No packages could be sorted into the selected transport based on the criteria.");
                 }
@@ -247,6 +250,15 @@ const Transports = () => {
             }
         }
     };
+
+    
+    useEffect(() => {
+        return () => {
+            if (modalRef.current) {
+                (modalRef.current as unknown as { toggle: () => void }).toggle = () => {};
+            }
+        };
+    }, []);
 
     return (
         <>
@@ -292,7 +304,7 @@ const Transports = () => {
                 </div>
             </Container>
 
-            <Modal show={lgShow} onHide={handleModalClose}>
+            <Modal show={lgShow} onHide={handleModalClose} ref={modalRef}>
                 <Modal.Header closeButton>
                     <Modal.Title>Sort Packages</Modal.Title>
                 </Modal.Header>
