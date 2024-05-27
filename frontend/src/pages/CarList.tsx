@@ -196,12 +196,13 @@ const ViewTransport = () => {
                             <Form.Label>Center:</Form.Label>
                             <Form.Control
                                 as="select"
-                                value={formData.type}
+                                value={formData.centerId}
                                 name="type"
                                 onChange={e => {
                                     console.log("e.target.value", e.target.value);
                                     setFormData({ ...formData, centerId: Number(e.target.value) });
                                 }}
+                                
                             >
                                 <option value="">None</option>
                                 {centerData.map((center: CenterData, index) => (

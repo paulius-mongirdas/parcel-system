@@ -37,4 +37,14 @@ export class PackageController {
     async delete(@Param('id') id: number): Promise<Package> {
         return this.packageService.delete(id);
     }
+    @Get('calculatePrice')
+    async calculatePrice(
+        @Query('country') country: string,
+        @Query('distance') distance: number,
+        @Query('weight') weight: number,
+        @Query('length') length: number,
+        @Query('width') width: number,
+        @Query('height') height: number): Promise<any[]> {
+        return this.packageService.calculatePrice(country, distance, weight, length, width, height);
+    }
 }

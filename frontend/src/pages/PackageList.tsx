@@ -10,6 +10,7 @@ import Package from "../components/Package";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import React from "react";
+import { count } from "console";
 
 interface PackageData {
     id: number;
@@ -57,6 +58,13 @@ const ViewPackage = () => {
     const [centerData, setCenterData] = useState<CenterData[]>([]);
     const [packageData, setPackageData] = useState<PackageData[]>([]);
     const [errors, setErrors] = useState({ address: '' });
+    const [ShowPriceSelection, setShowPriceSelection] = useState(false);
+    const [regularPricing, setRegularPricing] = useState(0);
+    const [fastDeliveryPricing, setfastDeliveryPricing] = useState(0);
+    const [sameDayPricing, setSameDayPricing] = useState(0);
+    const [finalPrice, setFinalPrice] = useState(0);
+    const [ShowPriceLoading, setShowPriceLoading] = useState(false);
+    const [ShowUnavailable, setShowUnavailable] = useState(false);
 
     const [formData, setFormData] = useState({
         address: "",
@@ -81,7 +89,8 @@ const ViewPackage = () => {
         componentRestrictions: { country: formData.country.toLowerCase() },
     });
     
-    useEffect(() => { 
+    // openCenterList()
+    const openCenterList = useEffect(() => { 
         fetch("https://valid.layercode.workers.dev/list/countries?format=select&flags=true&value=code")
             .then((response) => response.json())
             .then((data) => {
@@ -126,23 +135,28 @@ const ViewPackage = () => {
         }
     }, [inputRef.current, options]);
     
-    useEffect(() => {
-        axios.get(`http://localhost:3333/package/all`)
+    // openPackageList()
+    const openPackageList = useEffect(() => {
+        axios.get(`http://localhost:3333/package/all`) // select()
             .then(response => {
-                setPackageData(response.data);
+                setPackageData(response.data); // packages
             })
             .catch(error => {
                 console.error(error);
             });
-
-        if (localStorage.getItem("Status") && document.readyState === 'complete' && !refreshing) {
-            var message = localStorage.getItem("Status");
-            if (message == null) message = "";
-            showToastMessage(message);
-            localStorage.removeItem("Status");
-            setRefresh(false);
-        }
     }, [refreshing]);
+
+    // Success messages
+    useEffect(() => {
+        if (localStorage.getItem("Status") && document.readyState == 'complete' && !refreshing) {
+            var message = localStorage.getItem("Status");
+            if (message == null)
+                message = ""
+            showToastMessage(message); // Display the toast
+            localStorage.removeItem("Status"); // Clear the flag   
+            setRefresh(false)
+        }
+    });
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
         const { name, value, type } = e.target;
@@ -158,23 +172,16 @@ const ViewPackage = () => {
         setFormData({ ...formData, [name]: processedValue });
     };
 
-
-
     const handlePackageSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
     
-        if (!formData.address || !formData.city || !formData.country || !formData.postalCode) {
-            setErrors({ address: 'Address, city, country and postal code fields are required.' });
-            return;
-        }
-    
+        console.log('Form data:', formData);
         try {
             const packageLatLng = await getLatLngFromAddress(formData.address + ', ' + formData.city + ', ' + formData.country); 
             const centerDistances = await getDistances(packageLatLng); // 6. calculated distances 5. getDistances()
             
             // Loop: Finding the nearest center (step 7: sortPackage, step 8: chooseCenter)
             const nearestCenter = chooseCenter(centerDistances); // 7. sortPackage, step 8: chooseCenter
-    
             const response = await axios.post('http://localhost:3333/package/add', {
                 ...formData,
                 centerId: nearestCenter.id, //foreign key center and package
@@ -185,13 +192,14 @@ const ViewPackage = () => {
                 status: formData.status,
                 createdAt: new Date().toISOString(),
                 deliveredAt: "1970-01-01T00:00:00.000Z",
-                price: +formData.price
+                price: +finalPrice
             }, {
                 headers: { 'Content-Type': 'application/json' },
             }); // 10. updatePackage()
     
             setLgShow(false);
             window.location.reload();
+            console.log('Response from server:', response.data);
             setRefresh(true);
             localStorage.setItem("Status", "Parcel added Successfully");
         } catch (error) {
@@ -250,10 +258,56 @@ const ViewPackage = () => {
         });
     };
 
+    const calculatePrice = async () => {
+        if (!formData.address || !formData.city || !formData.country || !formData.postalCode) {
+            setErrors({ address: 'Address, city, country and postal code fields are required.' });
+            return;
+        }
+
+        try {
+            setShowPriceLoading(true);
+            const latilong = await getLatLngFromAddress(formData.address);
+            const distance = await getDistances(latilong);
+            console.log('LatLng:', latilong);
+            console.log('Distances:', distance);
+            console.log('FormData:', formData);
+            const response = await axios.get(`http://localhost:3333/package/calculatePrice`, {
+                params: {
+                    ...formData,
+                    country: formData.country,
+                    distance: distance[0].distance,
+                    weight: +formData.weight,
+                    length: +formData.length,
+                    width: +formData.width,
+                    height: +formData.height
+                }
+            });
+            console.log("Response:", response)
+            setRegularPricing(response.data[0].toFixed(2));
+            setfastDeliveryPricing(response.data[1].toFixed(2));
+            setSameDayPricing(response.data[2].toFixed(2));
+            setShowPriceLoading(false);
+            setShowPriceSelection(true);
+            console.log('Response from server:', response.data);
+            // setFormData({ ...formData, price: response.data });
+        } catch (error) {
+            console.error('Error submitting post:', error);
+            setShowPriceLoading(false);
+            setShowUnavailable(true);
+        }
+    }
+
+    const handlePriceSelect = (price: number) => {
+        setFinalPrice(price);
+        console.log("Form submitted with price:", price);
+      };
+
     return (
         <>
             <Nav />
             <Button onClick={() => setLgShow(true)} style={{ margin: '15px' }}>Register parcel</Button>
+
+            {/* show packages */}
             <Container className="d-flex align-items-center justify-content-center">
                 <div style={{ overflowY: 'scroll', maxHeight: '500px' }}>
                     {packageData.map((parcel: PackageData, index) => (
@@ -274,7 +328,7 @@ const ViewPackage = () => {
                     </Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <Form onSubmit={handlePackageSubmit}>
+                    <Form>
                         <Form.Group controlId="country">
                             <Form.Label>Country:</Form.Label>
                             <Form.Control required as="select" name="country" placeholder="Select country" defaultValue={formData.country} onChange={e => {
@@ -317,10 +371,73 @@ const ViewPackage = () => {
                             <Form.Control required type="number" pattern="[0-9]*" min={0} inputMode="numeric" name="weight" placeholder="Enter weight" onChange={handleInputChange} />
                         </Form.Group>
                         <br />
-                        <Button variant="success" type="submit" className="float-right" style={{ height: '35px' }}>
+                        {/* <Button variant="success" type="submit" className="float-right" style={{ height: '35px' }}>
                             Create
+                        </Button> */}
+                        <Button variant="primary" className="float-right" style={{ height: '35px' }} onClick={function () { calculatePrice() }}>
+                            Get prices
                         </Button>
                     </Form>
+                </Modal.Body>
+            </Modal>
+
+            <Modal
+                size="lg"
+                show={ShowPriceSelection}
+                onHide={() => setShowPriceSelection(false)}
+                aria-labelledby="example-modal-sizes-title-lg"
+            >
+                <Modal.Header closeButton>
+                    <Modal.Title>Select a Price</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <Form onSubmit={handlePackageSubmit}>
+                        <p>Please select one of the following prices:</p>
+                            <div className="d-flex justify-content-around">
+                            <Button variant="outline-primary" type="submit" className="mb-2" onClick={function () { handlePriceSelect(regularPricing) }}>
+                            {regularPricing}€
+                            <div style={{ fontSize: '12px', color: '#555' }}>Delivered in 3-5 business days</div>
+                            </Button>
+                            <Button variant="outline-primary" type="submit" className="mb-2" onClick={function () { handlePriceSelect(fastDeliveryPricing) }}>
+                            {fastDeliveryPricing}€
+                            <div style={{ fontSize: '12px', color: '#555' }}>Delivered in 1-2 business days</div>
+                            </Button>
+                            <Button variant="outline-primary" type="submit" className="mb-2" onClick={function () { handlePriceSelect(sameDayPricing) }}>
+                            {sameDayPricing}€
+                            <div style={{ fontSize: '12px', color: '#555' }}>Delivered by the end of the day</div>
+                            </Button>
+                            </div>
+                        </Form>
+                </Modal.Body>
+            </Modal>
+
+            <Modal
+                size="lg"
+                show={ShowPriceLoading}
+                aria-labelledby="example-modal-sizes-title-lg"
+            >
+                <Modal.Header>
+                    <Modal.Title>Calculating prices, please wait...</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <Button variant="primary" style={{ height: '35px' }} onClick={function () { setShowPriceLoading(false) }}>
+                        Cancel
+                    </Button>
+                </Modal.Body>
+            </Modal>
+
+            <Modal
+                size="lg"
+                show={ShowUnavailable}
+                aria-labelledby="example-modal-sizes-title-lg"
+            >
+                <Modal.Header>
+                    <Modal.Title>{"Sorry, we currently do not ship to this location."}</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <Button variant="primary" style={{ height: '35px' }} onClick={function () { setShowUnavailable(false) }}>
+                        Okay
+                    </Button>
                 </Modal.Body>
             </Modal>
         </>
