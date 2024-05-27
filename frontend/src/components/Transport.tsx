@@ -7,6 +7,7 @@ interface TransportData {
     id: number;
     type: string;
     capacity: number;
+    weight: number;
     averageSpeed: number;
     centerId: number;
 }
@@ -38,6 +39,7 @@ const Transport: React.FC<TransportProps> = ({ transport }) => {
     const [formData, setFormData] = useState({
         type: transport.type,
         capacity: transport.capacity,
+        weight: transport.weight,
         averageSpeed: transport.averageSpeed,
         centerId: transport.centerId,
     });
@@ -56,6 +58,7 @@ const Transport: React.FC<TransportProps> = ({ transport }) => {
                 id: +transport.id,
                 type: formData.type,
                 capacity: +formData.capacity,
+                weight: +formData.weight,
                 averageSpeed: +formData.averageSpeed,
                 centerId: formData.centerId,
             }, {
@@ -113,6 +116,7 @@ const Transport: React.FC<TransportProps> = ({ transport }) => {
                         <Card.Text>
                             <b>Type:</b> {transport.type} <br />
                             <b>Capacity:</b> {transport.capacity} <br />
+                            <b>Weight:</b>{transport.weight}<br/>
                             <b>Average speed:</b> {transport.averageSpeed} <br />
                             <b>Center:</b> {centerData !== undefined ? `#${centerData.id}, ${centerData.address}, ${centerData.city}, ${centerData.country}` : "None"}
                         </Card.Text>
@@ -135,6 +139,7 @@ const Transport: React.FC<TransportProps> = ({ transport }) => {
                     <Card.Text>
                         <b>Type:</b> {transport.type} <br />
                         <b>Capacity:</b> {transport.capacity} <br />
+                        <b>Weight:</b>{transport.weight}<br/>
                         <b>Average speed:</b> {transport.averageSpeed} <br />
                         <b>Center:</b> {centerData !== undefined ? `#${centerData.id}, ${centerData.address}, ${centerData.city}, ${centerData.country}` : "None"}
                     </Card.Text>
@@ -181,6 +186,11 @@ const Transport: React.FC<TransportProps> = ({ transport }) => {
                         <Form.Group controlId="capacity">
                             <Form.Label>Capacity:</Form.Label>
                             <Form.Control required type="number" pattern="[0-9]*" min={0} inputMode="numeric" name="capacity" defaultValue={transport.capacity} placeholder="Enter capacity" onChange={handleTextChange} />
+                        </Form.Group>
+                        <br />
+                        <Form.Group controlId="weight">
+                            <Form.Label>Weight:</Form.Label>
+                            <Form.Control required type="number" pattern="[0-9]*" min={0} inputMode="numeric" name="weight" defaultValue={transport.weight} placeholder="Enter weight" onChange={handleTextChange} />
                         </Form.Group>
                         <br />
                         <Form.Group controlId="averageSpeed">

@@ -15,6 +15,7 @@ interface TransportData {
     id: number;
     type: string;
     capacity: number;
+    weight: number;
     averageSpeed: number;
     centerId: number;
 }
@@ -44,6 +45,7 @@ const ViewTransport = () => {
     const [formData, setFormData] = useState({
         type: 'local van',
         capacity: 0,
+        weight: 0,
         averageSpeed: 0,
         centerId: -1,
     });
@@ -65,6 +67,7 @@ const ViewTransport = () => {
                 ...formData,
                 type: formData.type,
                 capacity: +formData.capacity,
+                weight: +formData.weight,
                 averageSpeed: +formData.averageSpeed,
                 centerId: formData.centerId
             }, {
@@ -91,6 +94,7 @@ const ViewTransport = () => {
                     id: transport.id,
                     type: transport.type,
                     capacity: transport.capacity,
+                    weight: transport.weight,
                     averageSpeed: transport.averageSpeed,
                     centerId: transport.centerId
                 }));
@@ -176,6 +180,11 @@ const ViewTransport = () => {
                         <Form.Group controlId="capacity">
                             <Form.Label>Capacity (m<sup>3</sup>):</Form.Label>
                             <Form.Control required type="number" pattern="[0-9]*" min={0} inputMode="numeric" name="capacity" placeholder="Enter capacity" onChange={handleTextChange} />
+                        </Form.Group>
+                        <br />
+                        <Form.Group controlId="weight">
+                            <Form.Label>Weight (kg<sup></sup>):</Form.Label>
+                            <Form.Control required type="number" pattern="[0-9]*" min={0} inputMode="numeric" name="weight" placeholder="Enter weight" onChange={handleTextChange} />
                         </Form.Group>
                         <br />
                         <Form.Group controlId="averageSpeed">

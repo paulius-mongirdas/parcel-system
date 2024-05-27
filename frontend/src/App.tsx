@@ -8,6 +8,7 @@ import SendMessages from "./pages/SendMessage"
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Inventory from './pages/Inventory';
 import Report from './pages/Report';
+import Transports from './pages/Transports';
 
 const UseNav=()=>{
   return(<Nav/>);
@@ -24,6 +25,7 @@ function App() {
         <Route path={'/report'} element={<Report/>} />
         <Route path={'/parcel'} element={<PackageList/>} />
         <Route path={'/message'} element={<SendMessages/>} />
+        <Route path={'/transports'} element={<Transports/>} />
       </Routes>
     </BrowserRouter>
   );

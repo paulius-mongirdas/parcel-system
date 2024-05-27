@@ -19,6 +19,23 @@ export class PackageService {
             throw error;
         }
     }
+    async selectFiltered(centerId: number): Promise<any> {
+        try {
+            const packages = await this.prisma.package.findMany({
+                where: {
+                    centerId: centerId,
+                    transportId: null
+                },
+                orderBy: {
+                    id: 'asc'
+                },
+            });
+    
+            return packages;
+        } catch (error) {
+            throw error;
+        }
+    }
     async insertPackage(body: Package): Promise<Package> {
         try {
             const parcel = await this.prisma.package.create({
@@ -80,6 +97,21 @@ export class PackageService {
                 data: {
                     status: "DELIVERED",
                     deliveredAt: new Date() 
+                }
+            });
+            return parcel;
+        } catch (error) {
+            throw error;
+        }
+    }
+    async updateTransport(id: number, transportId): Promise<Package> {
+        try {
+            const parcel = await this.prisma.package.update({
+                where: {
+                    id: Number(id)
+                },
+                data: {
+                    transportId: Number(transportId)
                 }
             });
             return parcel;

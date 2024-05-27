@@ -18,6 +18,7 @@ const Nav: React.FC<{}> = () => {
                         <Navi.Link href="/message">Send Message</Navi.Link>
                         <Navi.Link href="/inventory">Inventory</Navi.Link>
                         <Navi.Link href="/report">Parcel Report</Navi.Link>
+                        <Navi.Link href="/transports">Transports</Navi.Link>
                     </Navi>
                 </Navbar.Collapse>
                 <Navbar.Collapse className="justify-content-end">

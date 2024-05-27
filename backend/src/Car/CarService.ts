@@ -19,6 +19,22 @@ export class CarService {
             throw error;
         }
     }
+    async selectFiltered(centerId: number): Promise<any> {
+        try {
+            const transports = await this.prisma.transport.findMany({
+                where: {
+                    centerId: centerId
+                },
+                orderBy: {
+                    id: 'asc'
+                },
+            });
+    
+            return transports;
+        } catch (error) {
+            throw error;
+        }
+    }
     async insertCar(body: Transport): Promise<Transport> {
         try {
             if (body.centerId != -1) {
@@ -26,6 +42,7 @@ export class CarService {
                     data: {
                         type: body.type,
                         capacity: body.capacity,
+                        weight: body.weight,
                         averageSpeed: body.averageSpeed,
                         center: {
                             connect: {
@@ -41,6 +58,7 @@ export class CarService {
                     data: {
                         type: body.type,
                         capacity: body.capacity,
+                        weight: body.weight,
                         averageSpeed: body.averageSpeed,
                         centerId: null,
                     }
@@ -61,6 +79,7 @@ export class CarService {
                     data: {
                         type: body.type,
                         capacity: body.capacity,
+                        weight: body.weight,
                         averageSpeed: body.averageSpeed,
                         center: {
                             connect: {
