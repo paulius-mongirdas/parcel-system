@@ -29,6 +29,9 @@ model Transport {
   capacity     Int     @default(0)
   averageSpeed  Int   @default(0)
 
+  center   Center? @relation(fields: [centerId], references: [id])
+  centerId  Int?
+
   @@map("transports")
 }
 
@@ -40,8 +43,10 @@ model Center {
   city      String
   country   String
 
-  // Relation field for the Package model
+
   packages  Package[]
+
+  transports   Transport[]
 
   @@map("centers")
 }
@@ -64,6 +69,7 @@ model Package {
 
   centerId    Int
   center      Center   @relation(fields: [centerId], references: [id])
+
 
   @@map("packages")
 }

@@ -8,6 +8,15 @@ interface TransportData {
     type: string;
     capacity: number;
     averageSpeed: number;
+    centerId: number;
+}
+
+interface CenterData {
+    id: number;
+    capacity: number;
+    address: string;
+    city: string;
+    country: string;
 }
 
 interface TransportProps {
@@ -18,11 +27,19 @@ const Transport: React.FC<TransportProps> = ({ transport }) => {
     const [showCardDetails, setShowCardDetails] = useState(false);
     const [showCardOptions, setShowCardOptions] = useState(false);
     const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
-
+    const [centerList, setCenterList] = useState([]);
+    const [centerData, setCenterData] = useState<CenterData>({
+        id: 0,
+        capacity: 0,
+        address: "",
+        city: "",
+        country: ""
+    });
     const [formData, setFormData] = useState({
         type: transport.type,
         capacity: transport.capacity,
-        averageSpeed: transport.averageSpeed
+        averageSpeed: transport.averageSpeed,
+        centerId: transport.centerId,
     });
 
     const handleTextChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -39,7 +56,8 @@ const Transport: React.FC<TransportProps> = ({ transport }) => {
                 id: +transport.id,
                 type: formData.type,
                 capacity: +formData.capacity,
-                averageSpeed: +formData.averageSpeed
+                averageSpeed: +formData.averageSpeed,
+                centerId: formData.centerId,
             }, {
                 headers: {
                     'Content-Type': 'application/json',
@@ -64,6 +82,28 @@ const Transport: React.FC<TransportProps> = ({ transport }) => {
             console.error('Error submitting post:', error);
         }
     }
+
+    const getCenterList = useEffect(() => {
+        console.log("Getting center list..");
+        axios.get(`http://localhost:3333/center/all`)
+            .then(response => {
+                console.log("Report response: ", response.data);
+                const center = response.data.map((center: CenterData) => ({
+                    id: center.id,
+                    capacity: center.capacity,
+                    address: center.address,
+                    city: center.city,
+                    country: center.country
+                }));
+                setCenterList(center);
+                // find center data and set it as CenterData type instead of any
+                const centerData = center.find((center: CenterData) => center.id === transport.centerId) as CenterData;
+                setCenterData(centerData);
+            })
+            .catch(error => {
+                console.error(error);
+            });
+    }, []);
     return (
         <>
             <Row>
@@ -74,6 +114,7 @@ const Transport: React.FC<TransportProps> = ({ transport }) => {
                             <b>Type:</b> {transport.type} <br />
                             <b>Capacity:</b> {transport.capacity} <br />
                             <b>Average speed:</b> {transport.averageSpeed} <br />
+                            <b>Center:</b> {centerData !== undefined ? `#${centerData.id}, ${centerData.address}, ${centerData.city}, ${centerData.country}` : "None"}
                         </Card.Text>
                     </Card.Body>
                 </Card>
@@ -95,6 +136,7 @@ const Transport: React.FC<TransportProps> = ({ transport }) => {
                         <b>Type:</b> {transport.type} <br />
                         <b>Capacity:</b> {transport.capacity} <br />
                         <b>Average speed:</b> {transport.averageSpeed} <br />
+                        <b>Center:</b> {centerData !== undefined ? `#${centerData.id}, ${centerData.address}, ${centerData.city}, ${centerData.country}` : "None"}
                     </Card.Text>
                     <Button variant="primary" style={{ height: '35px' }} onClick={function () { setShowCardDetails(true); setShowCardOptions(false) }}>
                         Edit
@@ -144,6 +186,24 @@ const Transport: React.FC<TransportProps> = ({ transport }) => {
                         <Form.Group controlId="averageSpeed">
                             <Form.Label>Average speed:</Form.Label>
                             <Form.Control required type="number" pattern="[0-9]*" min={0} inputMode="numeric" name="averageSpeed" defaultValue={transport.averageSpeed} placeholder="Enter average speed" onChange={handleTextChange} />
+                        </Form.Group>
+                        <br />
+                        <Form.Group controlId="center">
+                            <Form.Label>Center:</Form.Label>
+                            <Form.Control
+                                as="select"
+                                defaultValue={transport.centerId}
+                                name="center"
+                                onChange={e => {
+                                    console.log("e.target.value", e.target.value);
+                                    setFormData({ ...formData, centerId: Number(e.target.value) });
+                                }}
+                            >
+                                <option value="-1">None</option>
+                                {centerList.map((center: CenterData, index) => (
+                                    <option key={index} value={center.id}>#{center.id}, {center.address}, {center.city}, {center.country}</option>
+                                ))}
+                            </Form.Control>
                         </Form.Group>
                         <br></br>
                         <Button variant="success" className="float-right" style={{ height: '35px' }} type="submit">

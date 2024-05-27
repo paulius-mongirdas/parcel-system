@@ -16,6 +16,15 @@ interface TransportData {
     type: string;
     capacity: number;
     averageSpeed: number;
+    centerId: number;
+}
+
+interface CenterData {
+    id: number;
+    capacity: number;
+    address: string;
+    city: string;
+    country: string;
 }
 
 const showToastMessage = (message: string) => {
@@ -35,7 +44,8 @@ const ViewTransport = () => {
     const [formData, setFormData] = useState({
         type: 'local van',
         capacity: 0,
-        averageSpeed: 0
+        averageSpeed: 0,
+        centerId: -1,
     });
 
     const handleTextChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -45,6 +55,8 @@ const ViewTransport = () => {
 
     const [refreshing, setRefresh] = useState(false);
 
+    const [centerData, setCenterData] = useState([]);
+
     const handleTransportSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         console.log('Form Data:', formData);
@@ -53,7 +65,8 @@ const ViewTransport = () => {
                 ...formData,
                 type: formData.type,
                 capacity: +formData.capacity,
-                averageSpeed: +formData.averageSpeed
+                averageSpeed: +formData.averageSpeed,
+                centerId: formData.centerId
             }, {
                 headers: {
                     'Content-Type': 'application/json',
@@ -68,7 +81,7 @@ const ViewTransport = () => {
             console.error('Error submitting post:', error);
         }
     };
-    
+
     // openCarList()
     const openCarList = useEffect(() => {
         axios.get(`http://localhost:3333/transport/all`)
@@ -78,7 +91,8 @@ const ViewTransport = () => {
                     id: transport.id,
                     type: transport.type,
                     capacity: transport.capacity,
-                    averageSpeed: transport.averageSpeed
+                    averageSpeed: transport.averageSpeed,
+                    centerId: transport.centerId
                 }));
                 setTransportData(transport);
             })
@@ -86,6 +100,24 @@ const ViewTransport = () => {
                 console.error(error);
             });
     }, [navigate]);
+
+    const getCenterList = useEffect(() => {
+        axios.get(`http://localhost:3333/center/all`)
+            .then(response => {
+                console.log("Report response: ", response.data);
+                const center = response.data.map((center: CenterData) => ({
+                    id: center.id,
+                    capacity: center.capacity,
+                    address: center.address,
+                    city: center.city,
+                    country: center.country
+                }));
+                setCenterData(center);
+            })
+            .catch(error => {
+                console.error(error);
+            });
+    }, []);
 
     // Success messages
     useEffect(() => {
@@ -103,7 +135,7 @@ const ViewTransport = () => {
             <Nav />
             <Button onClick={() => setLgShow(true)} style={{ margin: '15px' }}>Register transport</Button>
             <Container className="d-flex align-items-center justify-content-center">
-                <div style={{ overflowY: 'scroll', maxHeight: '500px' }}>
+                <div style={{ overflowY: 'scroll', height: '100%' }}>
                     {transportData.map((transport: TransportData, index) => (
                         <Transport key={index} transport={transport} />
                     ))}
@@ -125,36 +157,54 @@ const ViewTransport = () => {
                 <Modal.Body>
                     <Form onSubmit={handleTransportSubmit}>
                         <Form.Group controlId="type">
-                        <Form.Label>Type:</Form.Label>
-                        <Form.Control
-                            as="select"
-                            value={formData.type}
-                            name="type"
-                            onChange={e => {
-                                console.log("e.target.value", e.target.value);
-                                setFormData({ ...formData, type: e.target.value });
-                            }}
-                        >
-                            <option value="local van">Local van</option>
-                            <option value="long journey van">Long journey van</option>
-                            <option value="truck">Truck</option>
-                        </Form.Control>
+                            <Form.Label>Type:</Form.Label>
+                            <Form.Control
+                                as="select"
+                                value={formData.type}
+                                name="type"
+                                onChange={e => {
+                                    console.log("e.target.value", e.target.value);
+                                    setFormData({ ...formData, type: e.target.value });
+                                }}
+                            >
+                                <option value="local van">Local van</option>
+                                <option value="long journey van">Long journey van</option>
+                                <option value="truck">Truck</option>
+                            </Form.Control>
                         </Form.Group>
                         <br />
                         <Form.Group controlId="capacity">
-                        <Form.Label>Capacity (m<sup>3</sup>):</Form.Label>
-                        <Form.Control required type="number" pattern="[0-9]*" min={0} inputMode="numeric" name="capacity" placeholder="Enter capacity" onChange={handleTextChange} />
+                            <Form.Label>Capacity (m<sup>3</sup>):</Form.Label>
+                            <Form.Control required type="number" pattern="[0-9]*" min={0} inputMode="numeric" name="capacity" placeholder="Enter capacity" onChange={handleTextChange} />
                         </Form.Group>
                         <br />
                         <Form.Group controlId="averageSpeed">
-                        <Form.Label>Average speed (km/h):</Form.Label>
-                        <Form.Control required type="number" pattern="[0-9]*" min={0} inputMode="numeric" name="averageSpeed" placeholder="Enter average speed" onChange={handleTextChange} />
+                            <Form.Label>Average speed (km/h):</Form.Label>
+                            <Form.Control required type="number" pattern="[0-9]*" min={0} inputMode="numeric" name="averageSpeed" placeholder="Enter average speed" onChange={handleTextChange} />
+                        </Form.Group>
+                        <br />
+                        <Form.Group controlId="center">
+                            <Form.Label>Center:</Form.Label>
+                            <Form.Control
+                                as="select"
+                                value={formData.type}
+                                name="type"
+                                onChange={e => {
+                                    console.log("e.target.value", e.target.value);
+                                    setFormData({ ...formData, centerId: Number(e.target.value) });
+                                }}
+                            >
+                                <option value="">None</option>
+                                {centerData.map((center: CenterData, index) => (
+                                    <option key={index} value={center.id}>#{center.id}, {center.address}, {center.city}, {center.country}</option>
+                                ))}
+                            </Form.Control>
                         </Form.Group>
                         <br></br>
                         <Button variant="success" type="submit" className="float-right" style={{ height: '35px' }}>
                             Register
                         </Button>
-                        </Form>
+                    </Form>
                 </Modal.Body>
             </Modal>
         </>

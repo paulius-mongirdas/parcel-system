@@ -11,9 +11,9 @@ export class CarService {
             const transports = await this.prisma.transport.findMany({
                 orderBy: {
                     id: 'asc'
-                  },
+                },
             });
-            
+
             return transports;
         } catch (error) {
             throw error;
@@ -21,31 +21,70 @@ export class CarService {
     }
     async insertCar(body: Transport): Promise<Transport> {
         try {
-            const transport = await this.prisma.transport.create({
-                data: {
-                    type: body.type,
-                    capacity: body.capacity,
-                    averageSpeed: body.averageSpeed
-                }
-            });
-            return transport;
+            if (body.centerId != -1) {
+                const transport = await this.prisma.transport.create({
+                    data: {
+                        type: body.type,
+                        capacity: body.capacity,
+                        averageSpeed: body.averageSpeed,
+                        center: {
+                            connect: {
+                                id: body.centerId
+                            }
+                        }
+                    }
+                });
+                return transport;
+            }
+            else {
+                const transport = await this.prisma.transport.create({
+                    data: {
+                        type: body.type,
+                        capacity: body.capacity,
+                        averageSpeed: body.averageSpeed,
+                        centerId: null,
+                    }
+                });
+                return transport;
+            }
         } catch (error) {
             throw error;
         }
     }
     async update(body: Transport): Promise<Transport> {
         try {
-            const transport = await this.prisma.transport.update({
-                where: {
-                    id: body.id
-                },
-                data: {
-                    type: body.type,
-                    capacity: body.capacity,
-                    averageSpeed: body.averageSpeed
-                }
-            });
-            return transport;
+            if (body.centerId != -1) {
+                const transport = await this.prisma.transport.update({
+                    where: {
+                        id: body.id
+                    },
+                    data: {
+                        type: body.type,
+                        capacity: body.capacity,
+                        averageSpeed: body.averageSpeed,
+                        center: {
+                            connect: {
+                                id: body.centerId
+                            }
+                        }
+                    }
+                });
+                return transport;
+            }
+            else {
+                const transport = await this.prisma.transport.update({
+                    where: {
+                        id: body.id
+                    },
+                    data: {
+                        type: body.type,
+                        capacity: body.capacity,
+                        averageSpeed: body.averageSpeed,
+                        centerId: null,
+                    }
+                });
+                return transport;
+            }
         } catch (error) {
             throw error;
         }
@@ -54,7 +93,7 @@ export class CarService {
         try {
             const transport = await this.prisma.transport.delete({
                 where: {
-                    id:  Number(id)
+                    id: Number(id)
                 }
             });
             return transport;

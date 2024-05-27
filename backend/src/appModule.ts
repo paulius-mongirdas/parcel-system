@@ -5,6 +5,7 @@ import { PackageModule } from './Package/PackageModule';
 import { MessageModule } from './Message/MessageModule';
 import { ConfigModule } from '@nestjs/config';
 import { PrismaModule } from '../prisma/PrismaModule';
+import { InventoryModule } from './Inventory/InventoryModule';
 
 @Module({
   imports: [
@@ -12,6 +13,7 @@ import { PrismaModule } from '../prisma/PrismaModule';
     PrismaModule,
     CarModule,
     CenterModule,
+    InventoryModule,
     PackageModule,
     MessageModule
   ],
