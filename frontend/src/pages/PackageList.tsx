@@ -64,6 +64,7 @@ const ViewPackage = () => {
     const [sameDayPricing, setSameDayPricing] = useState(0);
     const [finalPrice, setFinalPrice] = useState(0);
     const [ShowPriceLoading, setShowPriceLoading] = useState(false);
+    const [ShowUnavailable, setShowUnavailable] = useState(false);
 
     const [formData, setFormData] = useState({
         address: "",
@@ -283,6 +284,7 @@ const ViewPackage = () => {
                     height: +formData.height
                 }
             });
+            console.log("Response:", response)
             setRegularPricing(response.data[0].toFixed(2));
             setfastDeliveryPricing(response.data[1].toFixed(2));
             setSameDayPricing(response.data[2].toFixed(2));
@@ -292,6 +294,8 @@ const ViewPackage = () => {
             // setFormData({ ...formData, price: response.data });
         } catch (error) {
             console.error('Error submitting post:', error);
+            setShowPriceLoading(false);
+            setShowUnavailable(true);
         }
     }
 
@@ -418,6 +422,21 @@ const ViewPackage = () => {
                 <Modal.Body>
                     <Button variant="primary" style={{ height: '35px' }} onClick={function () { setShowPriceLoading(false) }}>
                         Cancel
+                    </Button>
+                </Modal.Body>
+            </Modal>
+
+            <Modal
+                size="lg"
+                show={ShowUnavailable}
+                aria-labelledby="example-modal-sizes-title-lg"
+            >
+                <Modal.Header>
+                    <Modal.Title>{"Sorry, we currently do not ship to this location."}</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <Button variant="primary" style={{ height: '35px' }} onClick={function () { setShowUnavailable(false) }}>
+                        Okay
                     </Button>
                 </Modal.Body>
             </Modal>
