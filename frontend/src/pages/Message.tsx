@@ -52,10 +52,18 @@ function SendMessageForm() {
             
             await axios.put(`http://localhost:3333/package/update/delivered/${formData.packageId}`);
             setLgShow(false);
-            window.location.reload();
-            console.log('Response from server:', response.data);
             setRefresh(true);
-            localStorage.setItem("Status", "Message sent Successfully");
+
+            showToastMessage("Message sent successfully and package updated!");
+
+            setFormData({
+                phoneNumber: "",
+                text: "",
+                status: 'CREATED',
+                packageId: ""
+            });
+
+            console.log('Response from server:', response.data);
         } catch (error) {
             console.error('Error submitting post:', error);
         }
